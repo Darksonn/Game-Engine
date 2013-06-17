@@ -24,6 +24,9 @@ trait Input {
 	def closeRequested: Boolean
 	def keyboard: String
 	def mouse: Point
+	def leftMouseKeyPressed: Boolean
+	def rightMouseKeyPressed: Boolean
+	def middleMouseKeyPressed: Boolean
 }
 trait Output {
 	
