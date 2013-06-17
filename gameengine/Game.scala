@@ -2,6 +2,10 @@ package gameengine
 
 trait Game {
 	
+	val width: Int
+	val height: Int
+	val title: String
+
 	def step(in: Input): Maybe[ControlUpdate]
 	def render(gfx: Output): Unit
 
