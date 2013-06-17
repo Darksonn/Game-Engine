@@ -15,6 +15,14 @@ trait Game {
 
 }
 
+sealed trait Key
+object Key extends Any {
+	object MiddleMouse extends Key
+	object LeftMouse extends Key
+	object RightMouse extends Key
+	case class KeyboardKey(code: Int) extends Key
+}
+
 sealed trait ControlUpdate
 object ControlUpdate {
 	object Quit extends ControlUpdate
