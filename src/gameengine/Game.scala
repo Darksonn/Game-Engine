@@ -6,17 +6,17 @@ trait Game {
 	val height: Int
 	val title: String
 
-	def step(in: Input): Maybe[ControlUpdate]
+	def step(in: Input): Option[ControlUpdate]
 	def render(gfx: Output): Unit
 
-	def main(args: Arrray[String]): Unit = {
+	def main(args: Array[String]): Unit = {
 		impl.run(this)
 	}
 
 }
 
 sealed trait Key
-object Key extends Any {
+object Key {
 	object MiddleMouse extends Key
 	object LeftMouse extends Key
 	object RightMouse extends Key

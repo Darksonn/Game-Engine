@@ -27,6 +27,7 @@ package object impl {
 			game.step(todo) match {
 				case Some(ControlUpdate.Quit) =>
 					running = false
+				case None =>
 			}
 			if (running) {
 				game.render(todo)
