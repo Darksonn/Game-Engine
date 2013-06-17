@@ -35,5 +35,7 @@ trait Input {
 	def isPressed(key: Key): Boolean
 }
 trait Output {
-	
+	def withRotate(radians: Double)(body: => Unit): Unit
+	def scale(scale: Double)(body: => Unit): Unit
+	def translate(centerX: Double, centerY: Double)(body: => Unit): Unit
 }
