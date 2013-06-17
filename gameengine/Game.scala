@@ -18,6 +18,8 @@ object ControlUpdate {
 
 trait Input {
 	def closeRequested: Boolean
+	def keyboard: String
+	def mouse: Point
 }
 trait Output {
 	
