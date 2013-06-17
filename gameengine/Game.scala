@@ -5,11 +5,14 @@ trait Game {
 	def step(in: Input): Maybe[ControlUpdate]
 	def render(gfx: Output): Unit
 
+	def main(args: Arrray[String]): Unit = {
+		impl.run(this)
+	}
+
 }
 
-trait ControlUpdate
+sealed trait ControlUpdate
 object ControlUpdate {
-	object None extends ControlUpdate
 	object Quit extends ControlUpdate
 }
 
