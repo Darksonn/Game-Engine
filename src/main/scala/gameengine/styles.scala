@@ -2,8 +2,20 @@ package gameengine.styles
 
 import gameengine._
 
-class Style { this: Game =>
-	override def step(input: Input): Seq[ControlUpdate] = Seq()
+trait StyledGame extends Game {
+	def preUpdate(input: Input): Unit
+	def update(input: Input): Seq[ControlUpdate]
+	def postUpdate(): Seq[ControlUpdate]
+
+	final def step(input: Input): Seq[ControlUpdate] = {
+		preUpdate(input)
+		update(input) ++ postUpdate()
+	}
+}
+
+trait Style { this: StyledGame =>
+	override def preUpdate(input: Input) {}
+	override def postUpdate(): Seq[ControlUpdate] = Seq()
 }
 
 private[gameengine] class PollingInputState {
@@ -25,23 +37,37 @@ private[gameengine] class PollingInputState {
 	}
 }
 
-trait PollingInputStyle extends Style { this: Game =>
+trait PollingInputStyle extends Style { this: StyledGame =>
 	private val pollingInputState = new PollingInputState
 	def keyDown(key: Key) = pollingInputState.keyDown(key)
 	def mousePos = pollingInputState.mousePos
 
-	override def step(input: Input) = {
+	override def preUpdate(input: Input) = {
 		pollingInputState.update(input)
-		super.step(input)
+		super.preUpdate(input)
 	}
 }
 
-trait EventInputStyle extends Style { this: Game =>
-	override def step(input: Input) = {
+trait EventInputStyle extends Style { this: StyledGame =>
+	override def preUpdate(input: Input) = {
 		unhandled(input.queue.filterNot { ev => on.lift(ev).isDefined })
-		super.step(input)
+		super.preUpdate(input)
 	}
 
 	def on: PartialFunction[InputEvent, Unit]
 	def unhandled(evs: Seq[InputEvent])
+}
+
+trait ControlUpdateAccumulatingStyle extends Style { this: StyledGame =>
+	private var controlUpdates = Seq[ControlUpdate]()
+
+	def quit() {
+		controlUpdates :+= ControlUpdate.Quit
+	}
+
+	override def postUpdate() = {
+		val updates = super.postUpdate() ++ controlUpdates
+		controlUpdates = Seq()
+		updates
+	}
 }
