@@ -2,7 +2,10 @@ package gameengine
 
 import javax.swing._
 import java.awt.{Color, Graphics, Graphics2D, Dimension}
-import java.awt.event._
+import java.awt.event.{InputEvent => _, _}
+import java.util.concurrent.atomic.AtomicReference
+
+import gameengine.impl.pimps._
 
 package object impl {
 
@@ -20,6 +23,12 @@ package object impl {
 		with KeyListener
 		with WindowListener {
 
+    private val events = new AtomicReference(Seq[InputEvent]())
+    private def push(e: InputEvent) {
+      events.transform(_ :+ e)
+    }
+    def getAndClear(): Seq[InputEvent] = events.getAndSet(Seq())
+
 		def windowDeactivated(ev: WindowEvent): Unit = {}
 		def windowActivated(ev: WindowEvent): Unit = {}
 		def windowDeiconified(ev: WindowEvent): Unit = {}
@@ -28,18 +37,32 @@ package object impl {
 		def windowClosing(ev: WindowEvent): Unit = {}
 		def windowOpened(ev: WindowEvent): Unit = {}
 
-		def keyReleased(ev: KeyEvent): Unit = {}
-		def keyPressed(ev: KeyEvent): Unit = {}
-		def keyTyped(ev: KeyEvent): Unit = {}
+		def keyReleased(ev: KeyEvent) {
+      push(KeyUpEvent(Key.KeyboardKey(ev.getKeyCode)))
+    }
+		def keyPressed(ev: KeyEvent) {
+      push(KeyDownEvent(Key.KeyboardKey(ev.getKeyCode)))
+    }
+		def keyTyped(ev: KeyEvent) {
+      push(KeyTypeEvent(Key.KeyboardKey(ev.getKeyCode)))
+    }
 
-		def mouseMoved(ev: MouseEvent): Unit = {}
+		def mouseMoved(ev: MouseEvent) {
+      push(MouseMoveEvent(Point(ev.getX, ev.getY)))
+    }
 		def mouseDragged(ev: MouseEvent): Unit = {}
 		def mouseEntered(ev: MouseEvent): Unit = {}
 		def mouseExited(ev: MouseEvent): Unit = {}
 
-		def mouseReleased(ev: MouseEvent): Unit = {}
-		def mousePressed(ev: MouseEvent): Unit = {}
-		def mouseClicked(ev: MouseEvent): Unit = {}
+		def mouseReleased(ev: MouseEvent) {
+      push(KeyUpEvent(Key.MouseButton(ev.getButton)))
+    }
+		def mousePressed(ev: MouseEvent) {
+      push(KeyDownEvent(Key.MouseButton(ev.getButton)))
+    }
+		def mouseClicked(ev: MouseEvent) {
+      push(MouseClickEvent(Key.MouseButton(ev.getButton), Point(ev.getX, ev.getY)))
+    }
 		
 	}
 
