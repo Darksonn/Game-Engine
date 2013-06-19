@@ -77,3 +77,26 @@ object BooleanPacketFormat extends PacketFormat[Boolean] {
 	}
 	def receive(c: Connection): Boolean = c.in.readBoolean()
 }
+class ListPacketFormat[A,B<:PacketFormat[A]](formatter: B) extends PacketFormat[List[A]] {
+	def send(list: List[A], c: Connection):Unit = {
+		c.out.writeByte(21)
+		if (!list.hasDefiniteSize)
+			throw new IllegalArgumentException("Can't send infinite lists.")
+		c.out.writeInt(list.length)
+		for (x <- list) {
+			formatter.send(x, c)
+		}
+	}
+	def receive(c: Connection): List[A] = {
+		val id: Byte = c.in.readByte()
+		if (id != 21)
+			throw new IOException("Recieved unexpected data type.")
+		var result = List[A]()
+		val l = c.in.readInt()
+		for (_ <- 0 to l) {
+			val obj = formatter.receive(c)
+			result = List(obj) ::: result
+		}
+		return result
+	}
+}
