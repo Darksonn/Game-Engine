@@ -67,4 +67,37 @@ package object impl {
 		}
 	}
 
+	class Output(gfx: Graphics2D) extends gameengine.Output {
+		def withRotation(radians: Double)(body: => Unit): Unit = {
+			val transformation = gfx.getTransform()
+			gfx.rotate(radians)
+			body
+			gfx.setTransform(transformation)
+		}
+		def withScaling(scaleX: Double, scaleX: Double)(body: => Unit): Unit = {
+			val transformation = gfx.getTransform()
+			gfx.scale(radians)
+			body
+			gfx.setTransform(transformation)
+		}
+		def withTranslation(deltaX: Double, deltaY: Double)(body: => Unit): Unit = {
+			val transformation = gfx.getTransform()
+			gfx.translate(radians)
+			body
+			gfx.setTransform(transformation)
+		}
+		def drawFilledCircle(c: Color): Unit = {
+			gfx.fillOval(0, 0, 1, 1)
+		}
+		def drawFilledRect(c: Color): Unit = {
+			gfx.fillRect(0, 0, 1, 1)
+		}
+		def drawCircle(c: Color): Unit = {
+			gfx.drawOval(0, 0, 1, 1)
+		}
+		def drawRect(c: Color): Unit = {
+			gfx.drawRect(0, 0, 1, 1)
+		}
+	}
+
 }
