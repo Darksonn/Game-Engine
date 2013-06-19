@@ -44,4 +44,5 @@ trait Output {
 	def drawFilledRect(c: Color): Unit
 	def drawCircle(c: Color): Unit
 	def drawRect(c: Color): Unit
+	def draw(drawable: Drawable): Unit
 }

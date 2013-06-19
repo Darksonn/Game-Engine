@@ -98,6 +98,9 @@ package object impl {
 		def drawRect(c: Color): Unit = {
 			gfx.drawRect(0, 0, 1, 1)
 		}
+		def draw(drawable: Drawable): Unit = {
+			drawable.draw(gfx)
+		}
 	}
 
 }
