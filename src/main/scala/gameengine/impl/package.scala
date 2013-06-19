@@ -6,6 +6,8 @@ import java.awt.event.{InputEvent => _, _}
 import java.util.concurrent.atomic.AtomicReference
 import java.awt.image.BufferedImage
 
+import gameengine.impl.pimps._
+
 package object impl {
 
 	val todo = null
