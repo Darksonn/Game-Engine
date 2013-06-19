@@ -93,15 +93,19 @@ package object impl {
 			gfx.setTransform(transformation)
 		}
 		def drawFilledCircle(c: Color): Unit = {
+			gfx.setColor(c)
 			gfx.fillOval(0, 0, 1, 1)
 		}
 		def drawFilledRect(c: Color): Unit = {
+			gfx.setColor(c)
 			gfx.fillRect(0, 0, 1, 1)
 		}
 		def drawCircle(c: Color): Unit = {
+			gfx.setColor(c)
 			gfx.drawOval(0, 0, 1, 1)
 		}
 		def drawRect(c: Color): Unit = {
+			gfx.setColor(c)
 			gfx.drawRect(0, 0, 1, 1)
 		}
 		def draw(drawable: Drawable): Unit = {
