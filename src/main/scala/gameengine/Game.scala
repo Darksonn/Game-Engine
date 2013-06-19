@@ -4,7 +4,7 @@ import java.awt.Color
 import java.awt.event.{MouseEvent => AWTMouseEvent}
 
 trait Game {
-	
+
 	val width: Int
 	val height: Int
 	val title: String
@@ -20,11 +20,11 @@ trait Game {
 
 sealed trait Key
 object Key {
-  val LeftMouse = MouseButton(AWTMouseEvent.BUTTON1)
-  val MiddleMouse = MouseButton(AWTMouseEvent.BUTTON3)
-  val RightMouse = MouseButton(AWTMouseEvent.BUTTON2)
+	val LeftMouse = MouseButton(AWTMouseEvent.BUTTON1)
+	val MiddleMouse = MouseButton(AWTMouseEvent.BUTTON3)
+	val RightMouse = MouseButton(AWTMouseEvent.BUTTON2)
 
-  case class MouseButton(code: Int) extends Key
+	case class MouseButton(code: Int) extends Key
 	case class KeyboardKey(code: Int) extends Key
 }
 
