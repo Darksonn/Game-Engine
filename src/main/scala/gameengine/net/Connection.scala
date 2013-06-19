@@ -14,15 +14,19 @@ class Connection(input: DataInputStream, output: DataOutputStream) {
 	}
 }
 object Connection {
-	def connect(host: String, port: Int): Connection = {
-		val conn = new java.net.Socket(host, port)
-		return new Connection(new DataInputStream(conn.getInputStream()), new DataOutputStream(conn.getOutputStream())) {
+	def apply(host: String, port: Int): Connection = {
+		val socket = new java.net.Socket(host, port)
+		return Connection(socket)
+	}
+	def apply(socket: java.net.Socket): Connection = {
+		return new Connection(new DataInputStream(socket.getInputStream()), new DataOutputStream(socket.getOutputStream())) {
 			override
 			def close() = {
 				in.close
 				out.close
-				conn.close
+				socket.close
 			}
 		}
 	}
+	def apply(input: DataInputStream, output: DataOutputStream): Connection = new Connection(input, output)
 }
