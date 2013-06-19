@@ -80,15 +80,15 @@ package object impl {
 			body
 			gfx.setTransform(transformation)
 		}
-		def withScaling(scaleX: Double, scaleX: Double)(body: => Unit): Unit = {
+		def withScaling(scaleX: Double, scaleY: Double)(body: => Unit): Unit = {
 			val transformation = gfx.getTransform()
-			gfx.scale(radians)
+			gfx.scale(scaleX, scaleY)
 			body
 			gfx.setTransform(transformation)
 		}
 		def withTranslation(deltaX: Double, deltaY: Double)(body: => Unit): Unit = {
 			val transformation = gfx.getTransform()
-			gfx.translate(radians)
+			gfx.translate(deltaX, deltaY)
 			body
 			gfx.setTransform(transformation)
 		}
