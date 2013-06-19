@@ -35,35 +35,21 @@ package object impl {
 		def windowDeiconified(ev: WindowEvent): Unit = {}
 		def windowIconified(ev: WindowEvent): Unit = {}
 		def windowClosed(ev: WindowEvent): Unit = {}
-		def windowClosing(ev: WindowEvent): Unit = {}
+		def windowClosing(ev: WindowEvent): Unit = push(CloseRequestedEvent)
 		def windowOpened(ev: WindowEvent): Unit = {}
 
-		def keyReleased(ev: KeyEvent) {
-			push(KeyUpEvent(Key.KeyboardKey(ev.getKeyCode)))
-		}
-		def keyPressed(ev: KeyEvent) {
-			push(KeyDownEvent(Key.KeyboardKey(ev.getKeyCode)))
-		}
-		def keyTyped(ev: KeyEvent) {
-			push(KeyTypeEvent(Key.KeyboardKey(ev.getKeyCode)))
-		}
+		def keyReleased(ev: KeyEvent) = push(KeyUpEvent(Key.KeyboardKey(ev.getKeyCode)))
+		def keyPressed(ev: KeyEvent) = push(KeyDownEvent(Key.KeyboardKey(ev.getKeyCode)))
+		def keyTyped(ev: KeyEvent) = push(KeyTypeEvent(Key.KeyboardKey(ev.getKeyCode)))
 
-		def mouseMoved(ev: MouseEvent) {
-			push(MouseMoveEvent(Point(ev.getX, ev.getY)))
-		}
-		def mouseDragged(ev: MouseEvent): Unit = {}
+		def mouseMoved(ev: MouseEvent) = push(MouseMoveEvent(Point(ev.getX, ev.getY)))
+		def mouseDragged(ev: MouseEvent) = push(MouseMoveEvent(Point(ev.getX, ev.getY)))
 		def mouseEntered(ev: MouseEvent): Unit = {}
 		def mouseExited(ev: MouseEvent): Unit = {}
 
-		def mouseReleased(ev: MouseEvent) {
-			push(KeyUpEvent(Key.MouseButton(ev.getButton)))
-		}
-		def mousePressed(ev: MouseEvent) {
-			push(KeyDownEvent(Key.MouseButton(ev.getButton)))
-		}
-		def mouseClicked(ev: MouseEvent) {
-			push(MouseClickEvent(Key.MouseButton(ev.getButton), Point(ev.getX, ev.getY)))
-		}
+		def mouseReleased(ev: MouseEvent) = push(KeyUpEvent(Key.MouseButton(ev.getButton)))
+		def mousePressed(ev: MouseEvent) = push(KeyDownEvent(Key.MouseButton(ev.getButton)))
+		def mouseClicked(ev: MouseEvent) = push(MouseClickEvent(Key.MouseButton(ev.getButton), Point(ev.getX, ev.getY)))
 
 	}
 
@@ -81,6 +67,9 @@ package object impl {
 		window.setResizable(false)
 		window.pack()
 		window.pack()
+		if (comp.getWidth != game.width || comp.getHeight != game.height) {
+			println("Warning! Window has size (" + comp.getWidth + ", " + comp.getHeight + "), which is not the required size.")
+		}
 		window.setLocationRelativeTo(null)
 		window.setVisible(true)
 		window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
