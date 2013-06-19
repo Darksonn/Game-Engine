@@ -18,3 +18,17 @@ object PacketFormat {
 		}
 	}
 }
+
+object StringPacketFormat extends PacketFormat[String] {
+	def send(str: String, c: Connection): Unit = {
+		c.out.writeByte(20)
+		c.out.writeUTF(str)
+		c.flush()
+	}
+	def receive(c: Connection): String = {
+		val id: Byte = c.in.readByte()
+		if (id != 20)
+			throw new java.io.IOException("Recieved unexpected data type.")
+		c.in.readUTF()
+	}
+}
