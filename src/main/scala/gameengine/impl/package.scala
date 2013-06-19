@@ -4,8 +4,7 @@ import javax.swing._
 import java.awt.{Color, Graphics, Graphics2D, Dimension}
 import java.awt.event.{InputEvent => _, _}
 import java.util.concurrent.atomic.AtomicReference
-
-import gameengine.impl.pimps._
+import java.awt.image.BufferedImage
 
 package object impl {
 
@@ -70,6 +69,8 @@ package object impl {
 		val window = new JFrame(game.title)
 		val comp = new GameComponent(game)
 		window.add(comp)
+		window.setResizable(false)
+		window.pack()
 		window.pack()
 		window.setLocationRelativeTo(null)
 		window.setVisible(true)
@@ -83,10 +84,53 @@ package object impl {
 				case None =>
 			}
 			if (running) {
-				game.render(todo)
+				val img = new BufferedImage(game.width, game.height, BufferedImage.TYPE_INT_ARGB)
+				val gfx = img.createGraphics();
+				game.render(new OutputImpl(gfx))
+				comp.getGraphics.drawImage(img, 0, 0, comp)
 			}
 			val nowTime = System.nanoTime()
 			Thread.sleep(((nspf - (nowTime - lastTime)) / 1000000L) max 1L)
+		}
+	}
+
+	class OutputImpl(gfx: Graphics2D) extends gameengine.Output {
+		def withRotation(radians: Double)(body: => Unit): Unit = {
+			val transformation = gfx.getTransform()
+			gfx.rotate(radians)
+			body
+			gfx.setTransform(transformation)
+		}
+		def withScaling(scaleX: Double, scaleY: Double)(body: => Unit): Unit = {
+			val transformation = gfx.getTransform()
+			gfx.scale(scaleX, scaleY)
+			body
+			gfx.setTransform(transformation)
+		}
+		def withTranslation(deltaX: Double, deltaY: Double)(body: => Unit): Unit = {
+			val transformation = gfx.getTransform()
+			gfx.translate(deltaX, deltaY)
+			body
+			gfx.setTransform(transformation)
+		}
+		def drawFilledCircle(c: Color): Unit = {
+			gfx.setColor(c)
+			gfx.fillOval(0, 0, 1, 1)
+		}
+		def drawFilledRect(c: Color): Unit = {
+			gfx.setColor(c)
+			gfx.fillRect(0, 0, 1, 1)
+		}
+		def drawCircle(c: Color): Unit = {
+			gfx.setColor(c)
+			gfx.drawOval(0, 0, 1, 1)
+		}
+		def drawRect(c: Color): Unit = {
+			gfx.setColor(c)
+			gfx.drawRect(0, 0, 1, 1)
+		}
+		def draw(drawable: Drawable): Unit = {
+			drawable.draw(gfx)
 		}
 	}
 

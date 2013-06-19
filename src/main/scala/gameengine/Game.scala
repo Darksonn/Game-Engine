@@ -49,7 +49,9 @@ trait Output {
 	def withRotation(radians: Double)(body: => Unit): Unit
 	def withScaling(scaleX: Double, scaleY: Double)(body: => Unit): Unit
 	def withTranslation(deltaX: Double, deltaY: Double)(body: => Unit): Unit
+	def drawFilledCircle(c: Color): Unit
+	def drawFilledRect(c: Color): Unit
 	def drawCircle(c: Color): Unit
 	def drawRect(c: Color): Unit
-	def drawLine(direction: Double, c: Color): Unit
+	def draw(drawable: Drawable): Unit
 }
