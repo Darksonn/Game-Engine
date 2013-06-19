@@ -37,7 +37,7 @@ object DemoAdvanced extends Game {
 
 	def step(in: Input) = {
 		entities = entities.flatMap(e => e.step(in, entities))
-		None
+		Seq()
 	}
 	def render(out: Output) = {
 		out.withScaling(width, height) {
