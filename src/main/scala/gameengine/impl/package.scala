@@ -51,6 +51,9 @@ package object impl {
 		window.setResizable(false)
 		window.pack()
 		window.pack()
+		if (comp.getWidth != game.width || comp.getHeight != game.height) {
+			println("Warning! Window has size (" + comp.getWidth + ", " + comp.getHeight + "), which is not the required size.")
+		}
 		window.setLocationRelativeTo(null)
 		window.setVisible(true)
 		window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
