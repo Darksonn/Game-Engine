@@ -9,7 +9,7 @@ trait Game {
 	val height: Int
 	val title: String
 
-	def step(in: Input): Option[ControlUpdate]
+	def step(in: Input): Seq[ControlUpdate]
 	def render(gfx: Output): Unit
 
 	def main(args: Array[String]): Unit = {
@@ -44,6 +44,9 @@ case class KeyUpEvent(key: Key) extends KeyInputEvent
 sealed trait MouseInputEvent extends InputEvent
 case class MouseClickEvent(key: Key, pos: Point) extends MouseInputEvent
 case class MouseMoveEvent(to: Point) extends MouseInputEvent
+
+sealed trait GenericEvent extends InputEvent
+case object CloseRequestedEvent extends GenericEvent
 
 trait Output {
 	def withRotation(radians: Double)(body: => Unit): Unit

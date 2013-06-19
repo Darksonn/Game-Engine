@@ -1,4 +1,4 @@
-package gameengine.demo
+package gameengine.demos
 
 import gameengine._
 
@@ -13,7 +13,7 @@ object Demo extends Game {
 
 	def step(in: Input) = {
 		angle += angleDelta
-		None
+		Seq()
 	}
 	def render(out: Output) = {
 		import out._
