@@ -24,16 +24,10 @@ object PacketFormat {
 
 object StringPacketFormat extends PacketFormat[String] {
 	def send(str: String, c: Connection): Unit = {
-		c.out.writeByte(20)
 		c.out.writeUTF(str)
 		c.flush()
 	}
-	def receive(c: Connection): String = {
-		val id: Byte = c.in.readByte()
-		if (id != 20)
-			throw new IOException("Recieved unexpected data type.")
-		c.in.readUTF()
-	}
+	def receive(c: Connection): String = c.in.readUTF()
 }
 object BytePacketFormat extends PacketFormat[Byte] {
 	def send(b: Byte, c: Connection): Unit = {
@@ -86,7 +80,6 @@ object CharPacketFormat extends PacketFormat[Char] {
 }
 class MapPacketFormat[A,B](formatterA: PacketFormat[A], formatterB: PacketFormat[B]) extends PacketFormat[Map[A, B]] {
 	def send(map: Map[A, B], c: Connection):Unit = {
-		c.out.writeByte(22)
 		if (!map.hasDefiniteSize)
 			throw new IllegalArgumentException("Can't send infinite maps.")
 		c.out.writeInt(map.size)
@@ -96,9 +89,6 @@ class MapPacketFormat[A,B](formatterA: PacketFormat[A], formatterB: PacketFormat
 		}
 	}
 	def receive(c: Connection): Map[A, B] = {
-		val id: Byte = c.in.readByte()
-		if (id != 22)
-			throw new IOException("Recieved unexpected data type.")
 		var result = Map[A, B]()
 		val l = c.in.readInt()
 		for (_ <- 0 to l) {
@@ -111,7 +101,6 @@ class MapPacketFormat[A,B](formatterA: PacketFormat[A], formatterB: PacketFormat
 }
 class ListPacketFormat[A](formatter: PacketFormat[A]) extends PacketFormat[List[A]] {
 	def send(list: List[A], c: Connection):Unit = {
-		c.out.writeByte(21)
 		if (!list.hasDefiniteSize)
 			throw new IllegalArgumentException("Can't send infinite lists.")
 		c.out.writeInt(list.length)
@@ -120,9 +109,6 @@ class ListPacketFormat[A](formatter: PacketFormat[A]) extends PacketFormat[List[
 		}
 	}
 	def receive(c: Connection): List[A] = {
-		val id: Byte = c.in.readByte()
-		if (id != 21)
-			throw new IOException("Recieved unexpected data type.")
 		var result = List[A]()
 		val l = c.in.readInt()
 		for (_ <- 0 to l) {
