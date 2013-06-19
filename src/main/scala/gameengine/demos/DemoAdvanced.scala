@@ -1,9 +1,4 @@
-//Commented out because I wanted to compile my stuff.
-//When you remove the commenting, please fix your error at line 40:
-//type mismatch:
-//found   : None.type
-//required: Seq[gameengine.ControlUpdate]
-/*package gameengine.demos
+package gameengine.demos
 
 import gameengine._
 
@@ -55,4 +50,4 @@ object DemoAdvanced extends Game {
 		}
 	}
 
-}*/
+}
