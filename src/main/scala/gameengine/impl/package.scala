@@ -88,10 +88,9 @@ package object impl {
 		var lastTime = System.nanoTime()
 		while (running) {
 			val events = Input(eventListener.getAndClear())
-			game.step(events) match {
-				case Some(ControlUpdate.Quit) =>
+			game.step(events).foreach {
+				case ControlUpdate.Quit =>
 					running = false
-				case None =>
 			}
 			if (running) {
 				val img = new BufferedImage(game.width, game.height, BufferedImage.TYPE_INT_ARGB)

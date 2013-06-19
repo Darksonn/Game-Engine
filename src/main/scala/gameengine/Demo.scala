@@ -13,7 +13,7 @@ object Demo extends Game {
 
 	def step(in: Input) = {
 		angle += angleDelta
-		None
+		Seq()
 	}
 	def render(out: Output) = {
 		import out._

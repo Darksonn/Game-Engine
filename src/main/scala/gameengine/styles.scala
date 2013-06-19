@@ -3,7 +3,7 @@ package gameengine.styles
 import gameengine._
 
 class Style { this: Game =>
-	override def step(input: Input) {}
+	override def step(input: Input): Seq[ControlUpdate] = Seq()
 }
 
 private[gameengine] class PollingInputState {
@@ -13,7 +13,7 @@ private[gameengine] class PollingInputState {
 	private var _mousePos: Option[Point] = None
 	def mousePos = _mousePos.get
 
-	private[gameengine] def update(input: Input) {
+	private[gameengine] def update(input: Input) = {
 		input.queue.foreach {
 			case KeyDownEvent(key) => keysDown += key
 			case KeyUpEvent(key) => keysDown -= key
@@ -30,8 +30,18 @@ trait PollingInputStyle extends Style { this: Game =>
 	def keyDown(key: Key) = pollingInputState.keyDown(key)
 	def mousePos = pollingInputState.mousePos
 
-	override def step(input: Input) {
+	override def step(input: Input) = {
 		pollingInputState.update(input)
 		super.step(input)
 	}
+}
+
+trait EventInputStyle extends Style { this: Game =>
+	override def step(input: Input) = {
+		unhandled(input.queue.filterNot { ev => on.lift(ev).isDefined })
+		super.step(input)
+	}
+
+	def on: PartialFunction[InputEvent, Unit]
+	def unhandled(evs: Seq[InputEvent])
 }

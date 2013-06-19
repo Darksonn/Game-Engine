@@ -9,7 +9,7 @@ trait Game {
 	val height: Int
 	val title: String
 
-	def step(in: Input): Option[ControlUpdate]
+	def step(in: Input): Seq[ControlUpdate]
 	def render(gfx: Output): Unit
 
 	def main(args: Array[String]): Unit = {
