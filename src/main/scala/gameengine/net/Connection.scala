@@ -13,3 +13,16 @@ class Connection(input: DataInputStream, output: DataOutputStream) {
 		out.flush()
 	}
 }
+object Connection {
+	def connect(host: String, port: Int): Connection = {
+		val conn = new java.net.Socket(host, port)
+		return new Connection(new DataInputStream(conn.getInputStream()), new DataOutputStream(conn.getOutputStream())) {
+			override
+			def close() = {
+				in.close
+				out.close
+				conn.close
+			}
+		}
+	}
+}
