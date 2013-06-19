@@ -65,7 +65,7 @@ package object impl {
 			if (running) {
 				val img = new BufferedImage(game.width, game.height, BufferedImage.TYPE_INT_ARGB)
 				val gfx = img.createGraphics();
-				game.render(todo)
+				game.render(new OutputImpl(gfx))
 				comp.getGraphics.drawImage(img, 0, 0, comp)
 			}
 			val nowTime = System.nanoTime()
@@ -73,7 +73,7 @@ package object impl {
 		}
 	}
 
-	class Output(gfx: Graphics2D) extends gameengine.Output {
+	class OutputImpl(gfx: Graphics2D) extends gameengine.Output {
 		def withRotation(radians: Double)(body: => Unit): Unit = {
 			val transformation = gfx.getTransform()
 			gfx.rotate(radians)
