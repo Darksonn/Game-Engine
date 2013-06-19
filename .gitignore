@@ -11,6 +11,7 @@
 # Stuff created by sbt #
 ########################
 target/*
+build.sbt
 
 # Packages #
 ############
