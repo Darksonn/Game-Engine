@@ -3,6 +3,7 @@ package gameengine
 import javax.swing._
 import java.awt.{Color, Graphics, Graphics2D, Dimension}
 import java.awt.event._
+import java.awt.image.BufferedImage
 
 package object impl {
 
@@ -47,6 +48,8 @@ package object impl {
 		val window = new JFrame(game.title)
 		val comp = new GameComponent(game)
 		window.add(comp)
+		window.setResizable(false)
+		window.pack()
 		window.pack()
 		window.setLocationRelativeTo(null)
 		window.setVisible(true)
@@ -60,7 +63,10 @@ package object impl {
 				case None =>
 			}
 			if (running) {
+				val img = new BufferedImage(game.width, game.height, BufferedImage.TYPE_INT_ARGB)
+				val gfx = img.createGraphics();
 				game.render(todo)
+				comp.getGraphics.drawImage(img, 0, 0, comp)
 			}
 			val nowTime = System.nanoTime()
 			Thread.sleep(((nspf - (nowTime - lastTime)) / 1000000L) max 1L)
