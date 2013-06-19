@@ -70,6 +70,13 @@ package object impl {
 	def run(game: gameengine.Game): Unit = {
 		val window = new JFrame(game.title)
 		val comp = new GameComponent(game)
+
+		val eventListener = new EverythingListener
+		comp.addKeyListener(eventListener)
+		comp.addMouseListener(eventListener)
+		comp.addMouseMotionListener(eventListener)
+		window.addWindowListener(eventListener)
+
 		window.add(comp)
 		window.setResizable(false)
 		window.pack()
@@ -80,7 +87,8 @@ package object impl {
 		var running = true
 		var lastTime = System.nanoTime()
 		while (running) {
-			game.step(todo) match {
+			val events = Input(eventListener.getAndClear())
+			game.step(events) match {
 				case Some(ControlUpdate.Quit) =>
 					running = false
 				case None =>
