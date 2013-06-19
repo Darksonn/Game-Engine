@@ -1,6 +1,6 @@
 package gameengine.net
 
-import scala.collection.immutable.List
+import scala.collection.immutable.{List, Map}
 import java.io.IOException
 
 trait PacketFormat[T] {
@@ -77,7 +77,39 @@ object BooleanPacketFormat extends PacketFormat[Boolean] {
 	}
 	def receive(c: Connection): Boolean = c.in.readBoolean()
 }
-class ListPacketFormat[A,B<:PacketFormat[A]](formatter: B) extends PacketFormat[List[A]] {
+object CharPacketFormat extends PacketFormat[Char] {
+	def send(i: Char, c: Connection): Unit = {
+		c.out.writeChar(i)
+		c.flush()
+	}
+	def receive(c: Connection): Char = c.in.readChar()
+}
+class MapPacketFormat[A,B](formatterA: PacketFormat[A], formatterB: PacketFormat[B]) extends PacketFormat[Map[A, B]] {
+	def send(map: Map[A, B], c: Connection):Unit = {
+		c.out.writeByte(22)
+		if (!map.hasDefiniteSize)
+			throw new IllegalArgumentException("Can't send infinite maps.")
+		c.out.writeInt(map.size)
+		for ((key, value) <- map) {
+			formatterA.send(key, c)
+			formatterB.send(value, c)
+		}
+	}
+	def receive(c: Connection): Map[A, B] = {
+		val id: Byte = c.in.readByte()
+		if (id != 22)
+			throw new IOException("Recieved unexpected data type.")
+		var result = Map[A, B]()
+		val l = c.in.readInt()
+		for (_ <- 0 to l) {
+			val k = formatterA.receive(c)
+			val v = formatterB.receive(c)
+			result = Map(k -> v) ++ result
+		}
+		return result
+	}
+}
+class ListPacketFormat[A](formatter: PacketFormat[A]) extends PacketFormat[List[A]] {
 	def send(list: List[A], c: Connection):Unit = {
 		c.out.writeByte(21)
 		if (!list.hasDefiniteSize)
