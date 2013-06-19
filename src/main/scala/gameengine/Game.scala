@@ -1,5 +1,7 @@
 package gameengine
 
+import java.awt.Color
+
 trait Game {
 	
 	val width: Int
@@ -40,5 +42,5 @@ trait Output {
 	def withTranslation(deltaX: Double, deltaY: Double)(body: => Unit): Unit
 	def drawCircle(c: Color): Unit
 	def drawRect(c: Color): Unit
-	def drawLine(radians: Double, c: Color): Unit
+	def drawLine(direction: Double, c: Color): Unit
 }
