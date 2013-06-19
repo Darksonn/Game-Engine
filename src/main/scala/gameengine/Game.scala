@@ -45,6 +45,9 @@ sealed trait MouseInputEvent extends InputEvent
 case class MouseClickEvent(key: Key, pos: Point) extends MouseInputEvent
 case class MouseMoveEvent(to: Point) extends MouseInputEvent
 
+sealed trait GenericEvent extends InputEvent
+case object CloseRequestedEvent extends GenericEvent
+
 trait Output {
 	def withRotation(radians: Double)(body: => Unit): Unit
 	def withScaling(scaleX: Double, scaleY: Double)(body: => Unit): Unit

@@ -1,4 +1,4 @@
-package gameengine.demo
+package gameengine.demos
 
 import gameengine._
 
