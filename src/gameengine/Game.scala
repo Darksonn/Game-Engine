@@ -36,6 +36,6 @@ trait Input {
 }
 trait Output {
 	def withRotation(radians: Double)(body: => Unit): Unit
-	def withScaling(xScale: Double, yScale: Double)(body: => Unit): Unit
+	def withScaling(scaleX: Double, scaleX: Double)(body: => Unit): Unit
 	def withTranslation(deltaX: Double, deltaY: Double)(body: => Unit): Unit
 }
