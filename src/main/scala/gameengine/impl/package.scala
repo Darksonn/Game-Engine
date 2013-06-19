@@ -108,6 +108,34 @@ package object impl {
 			gfx.setColor(c)
 			gfx.drawRect(0, 0, 1, 1)
 		}
+		def drawFilledOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit = {
+			withTranslation(x, y) {
+				withScaling(w, h) {
+					drawFilledCircle(c)
+				}
+			}
+		}
+		def drawFilledRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit = {
+			withTranslation(x, y) {
+				withScaling(w, h) {
+					drawFilledRect(c)
+				}
+			}
+		}
+		def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit = {
+			withTranslation(x, y) {
+				withScaling(w, h) {
+					drawCircle(c)
+				}
+			}
+		}
+		def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit = {
+			withTranslation(x, y) {
+				withScaling(w, h) {
+					drawRect(c)
+				}
+			}
+		}
 		def draw(drawable: Drawable): Unit = {
 			drawable.draw(gfx)
 		}
