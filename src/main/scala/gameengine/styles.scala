@@ -28,6 +28,7 @@ private[gameengine] class PollingInputState {
 trait PollingInputStyle extends Style { this: Game =>
 	private val pollingInputState = new PollingInputState
 	def keyDown(key: Key) = pollingInputState.keyDown(key)
+	def mousePos = pollingInputState.mousePos
 
 	override def step(input: Input) {
 		pollingInputState.update(input)
