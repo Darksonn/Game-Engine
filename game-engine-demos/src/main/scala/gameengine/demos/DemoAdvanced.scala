@@ -17,8 +17,7 @@ object DemoAdvanced extends BaseGame {
 		val y: Int
 		val color: java.awt.Color
 		def step(in: Input, others: Seq[Entity]): Seq[Entity]
-		def render(out: Output) = {
-			import out._
+		def render(out: Output) {
 			out.withScaling(10, 10) {
 				out.drawFilledRect(color)
 			}
@@ -35,11 +34,11 @@ object DemoAdvanced extends BaseGame {
 
 	var entities = Seq[Entity]() //todo: fill this in
 
-	def step(in: Input) = {
+	override def step(in: Input) = {
 		entities = entities.flatMap(e => e.step(in, entities))
 		Seq()
 	}
-	def render(out: Output) = {
+	override def render(out: Output) {
 		out.withScaling(width, height) {
 			out.drawFilledRect(Colors.Background)
 		}

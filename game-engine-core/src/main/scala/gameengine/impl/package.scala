@@ -30,30 +30,30 @@ package object impl {
 		}
 		def getAndClear(): Seq[InputEvent] = events.getAndSet(Seq())
 
-		def windowDeactivated(ev: WindowEvent): Unit = {}
-		def windowActivated(ev: WindowEvent): Unit = {}
-		def windowDeiconified(ev: WindowEvent): Unit = {}
-		def windowIconified(ev: WindowEvent): Unit = {}
-		def windowClosed(ev: WindowEvent): Unit = {}
-		def windowClosing(ev: WindowEvent): Unit = push(CloseRequestedEvent)
-		def windowOpened(ev: WindowEvent): Unit = {}
+		def windowDeactivated(ev: WindowEvent) {}
+		def windowActivated(ev: WindowEvent) {}
+		def windowDeiconified(ev: WindowEvent) {}
+		def windowIconified(ev: WindowEvent) {}
+		def windowClosed(ev: WindowEvent) {}
+		def windowClosing(ev: WindowEvent) { push(CloseRequestedEvent) }
+		def windowOpened(ev: WindowEvent) {}
 
-		def keyReleased(ev: KeyEvent) = push(KeyUpEvent(Key.KeyboardKey(ev.getKeyCode)))
-		def keyPressed(ev: KeyEvent) = push(KeyDownEvent(Key.KeyboardKey(ev.getKeyCode)))
-		def keyTyped(ev: KeyEvent) = push(KeyTypeEvent(Key.KeyboardKey(ev.getKeyCode)))
+		def keyReleased(ev: KeyEvent) { push(KeyUpEvent(Key.KeyboardKey(ev.getKeyCode))) }
+		def keyPressed(ev: KeyEvent) { push(KeyDownEvent(Key.KeyboardKey(ev.getKeyCode))) }
+		def keyTyped(ev: KeyEvent) { push(KeyTypeEvent(Key.KeyboardKey(ev.getKeyCode))) }
 
-		def mouseMoved(ev: MouseEvent) = push(MouseMoveEvent(Point(ev.getX, ev.getY)))
-		def mouseDragged(ev: MouseEvent) = push(MouseMoveEvent(Point(ev.getX, ev.getY)))
-		def mouseEntered(ev: MouseEvent): Unit = {}
-		def mouseExited(ev: MouseEvent): Unit = {}
+		def mouseMoved(ev: MouseEvent) { push(MouseMoveEvent(Point(ev.getX, ev.getY))) }
+		def mouseDragged(ev: MouseEvent) { push(MouseMoveEvent(Point(ev.getX, ev.getY))) }
+		def mouseEntered(ev: MouseEvent) {}
+		def mouseExited(ev: MouseEvent) {}
 
-		def mouseReleased(ev: MouseEvent) = push(KeyUpEvent(Key.MouseButton(ev.getButton)))
-		def mousePressed(ev: MouseEvent) = push(KeyDownEvent(Key.MouseButton(ev.getButton)))
-		def mouseClicked(ev: MouseEvent) = push(MouseClickEvent(Key.MouseButton(ev.getButton), Point(ev.getX, ev.getY)))
+		def mouseReleased(ev: MouseEvent) { push(KeyUpEvent(Key.MouseButton(ev.getButton))) }
+		def mousePressed(ev: MouseEvent) { push(KeyDownEvent(Key.MouseButton(ev.getButton))) }
+		def mouseClicked(ev: MouseEvent) { push(MouseClickEvent(Key.MouseButton(ev.getButton), Point(ev.getX, ev.getY))) }
 
 	}
 
-	def run(game: gameengine.BaseGame): Unit = {
+	def run(game: gameengine.BaseGame) {
 		val window = new JFrame(game.title)
 		val comp = new GameComponent(game)
 
@@ -83,7 +83,7 @@ package object impl {
 			}
 			if (running) {
 				val img = new BufferedImage(game.width, game.height, BufferedImage.TYPE_INT_ARGB)
-				val gfx = img.createGraphics();
+				val gfx = img.createGraphics()
 				game.render(new OutputImpl(gfx))
 				comp.getGraphics.drawImage(img, 0, 0, comp)
 			}
@@ -116,51 +116,51 @@ package object impl {
 			gfx.setTransform(transformation)
 			res
 		}
-		def drawFilledCircle(c: Color): Unit = {
+		def drawFilledCircle(c: Color) {
 			gfx.setColor(c)
 			gfx.fillOval(0, 0, 1, 1)
 		}
-		def drawFilledRect(c: Color): Unit = {
+		def drawFilledRect(c: Color) {
 			gfx.setColor(c)
 			gfx.fillRect(0, 0, 1, 1)
 		}
-		def drawCircle(c: Color): Unit = {
+		def drawCircle(c: Color) {
 			gfx.setColor(c)
 			gfx.drawOval(0, 0, 1, 1)
 		}
-		def drawRect(c: Color): Unit = {
+		def drawRect(c: Color) {
 			gfx.setColor(c)
 			gfx.drawRect(0, 0, 1, 1)
 		}
-		def drawFilledOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit = {
+		def drawFilledOval(x: Double, y: Double, w: Double, h: Double, c: Color) {
 			withTranslation(x, y) {
 				withScaling(w, h) {
 					drawFilledCircle(c)
 				}
 			}
 		}
-		def drawFilledRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit = {
+		def drawFilledRect(x: Double, y: Double, w: Double, h: Double, c: Color) {
 			withTranslation(x, y) {
 				withScaling(w, h) {
 					drawFilledRect(c)
 				}
 			}
 		}
-		def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit = {
+		def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color) {
 			withTranslation(x, y) {
 				withScaling(w, h) {
 					drawCircle(c)
 				}
 			}
 		}
-		def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit = {
+		def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color) {
 			withTranslation(x, y) {
 				withScaling(w, h) {
 					drawRect(c)
 				}
 			}
 		}
-		def draw(drawable: Drawable): Unit = {
+		def draw(drawable: Drawable) {
 			drawable.draw(gfx)
 		}
 	}

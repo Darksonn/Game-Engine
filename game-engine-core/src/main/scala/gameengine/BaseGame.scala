@@ -4,18 +4,16 @@ import java.awt.Color
 import java.awt.event.{MouseEvent => AWTMouseEvent}
 
 trait BaseGame {
-
 	val width: Int
 	val height: Int
 	val title: String
 
 	def step(in: Input): Seq[ControlUpdate]
-	def render(gfx: Output): Unit
+	def render(gfx: Output)
 
-	def main(args: Array[String]): Unit = {
+	def main(args: Array[String]) {
 		impl.run(this)
 	}
-
 }
 
 sealed trait Key
