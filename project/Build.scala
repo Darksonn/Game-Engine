@@ -12,7 +12,7 @@ object GameEngineBuild extends Build {
 		scalaVersion := Deps.V.Scala
 	)
 
-	lazy val root = Project("game-engine", file("."), settings = Project.defaultSettings) aggregate (core, functional, demos)
+	lazy val root = Project("game-engine", file("."), settings = Project.defaultSettings) aggregate (core, functional, demos, net)
 
 	lazy val core = Project("game-engine-core", file("game-engine-core"), settings = Project.defaultSettings)
 	lazy val functional = Project("game-engine-frp", file("game-engine-frp"), settings = Project.defaultSettings) dependsOn core
