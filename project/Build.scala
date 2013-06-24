@@ -9,7 +9,8 @@ object GameEngineBuild extends Build {
 	}
 
 	override lazy val settings = super.settings ++ Seq(
-		scalaVersion := Deps.V.Scala
+		scalaVersion := Deps.V.Scala,
+		scalacOptions ++= Seq("-deprecation", "-feature")
 	)
 
 	lazy val root = Project("game-engine", file("."), settings = Project.defaultSettings) aggregate (core, functional, demos, net, states)
