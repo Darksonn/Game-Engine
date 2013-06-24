@@ -91,6 +91,7 @@ package object impl {
 			Thread.sleep(((nspf - (nowTime - lastTime)) / 1000000L) max 1L)
 			lastTime = System.nanoTime()
 		}
+		window.dispose()
 	}
 
 	class OutputImpl(gfx: Graphics2D) extends gameengine.Output {
