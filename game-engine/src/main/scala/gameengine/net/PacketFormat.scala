@@ -12,7 +12,7 @@ object PacketFormat {
 		def send(obj: (A, B), c: Connection): Unit = {
 			p1.send(obj._1, c)
 			p2.send(obj._2, c)
-			c.flush()
+			c.flush
 		}
 		def receive(c: Connection): (A, B) = {
 			val a = p1.receive(c)
@@ -21,60 +21,96 @@ object PacketFormat {
 		}
 	}
 }
+//Don't use several unblocking readers on the same connection at once.
+//When queueRead is called, starts a thread, and listens on the connection until something is received and puts it in a buffer for retrival with read
+class UnblockingPacketFormatReader[A](formatter: PacketFormat[A], c: Connection) {
+	private var buffer: List[A] = List()
+	private var reader: UnblockerThread = null
+	class UnblockerThread extends Thread {
+		override
+		def run() {
+			buffer = buffer ++ List(formatter.receive(c))
+			initialized = false
+		}
+	}
+	private def init() = {
+		if (!initialized) {
+			if (reader == null)
+				reader = new UnblockerThread
+			reader.setDaemon(true)
+			reader.start()
+		}
+		initialized = true
+	}
+	private var initialized = false
+	def queueRead(): Unit = {
+		init()
+	}
+	//true if this reader is waiting for the connection to return something.
+	def isReadWaiting = initialized
+	//Returns a option, none if nothing is buffered, the next value in the buffer, if something is buffered.
+	def read(): Option[A] = {
+		if (buffer.isEmpty)
+			return None
+		val x = buffer(0)
+		buffer = buffer.tail
+		return Option(x)
+	}
+}
 
 object StringPacketFormat extends PacketFormat[String] {
 	def send(str: String, c: Connection): Unit = {
 		c.out.writeUTF(str)
-		c.flush()
+		c.flush
 	}
 	def receive(c: Connection): String = c.in.readUTF()
 }
 object BytePacketFormat extends PacketFormat[Byte] {
 	def send(b: Byte, c: Connection): Unit = {
 		c.out.writeByte(b)
-		c.flush()
+		c.flush
 	}
 	def receive(c: Connection): Byte = c.in.readByte()
 }
 object ShortPacketFormat extends PacketFormat[Short] {
 	def send(short: Short, c: Connection): Unit = {
 		c.out.writeShort(short)
-		c.flush()
+		c.flush
 	}
 	def receive(c: Connection): Short = c.in.readShort()
 }
 object IntPacketFormat extends PacketFormat[Int] {
 	def send(i: Int, c: Connection): Unit = {
 		c.out.writeInt(i)
-		c.flush()
+		c.flush
 	}
 	def receive(c: Connection): Int = c.in.readInt()
 }
 object FloatPacketFormat extends PacketFormat[Float] {
 	def send(i: Float, c: Connection): Unit = {
 		c.out.writeFloat(i)
-		c.flush()
+		c.flush
 	}
 	def receive(c: Connection): Float = c.in.readFloat()
 }
 object DoublePacketFormat extends PacketFormat[Double] {
 	def send(i: Double, c: Connection): Unit = {
 		c.out.writeDouble(i)
-		c.flush()
+		c.flush
 	}
 	def receive(c: Connection): Double = c.in.readDouble()
 }
 object BooleanPacketFormat extends PacketFormat[Boolean] {
 	def send(i: Boolean, c: Connection): Unit = {
 		c.out.writeBoolean(i)
-		c.flush()
+		c.flush
 	}
 	def receive(c: Connection): Boolean = c.in.readBoolean()
 }
 object CharPacketFormat extends PacketFormat[Char] {
 	def send(i: Char, c: Connection): Unit = {
 		c.out.writeChar(i)
-		c.flush()
+		c.flush
 	}
 	def receive(c: Connection): Char = c.in.readChar()
 }
@@ -87,6 +123,7 @@ class MapPacketFormat[A,B](formatterA: PacketFormat[A], formatterB: PacketFormat
 			formatterA.send(key, c)
 			formatterB.send(value, c)
 		}
+		c.flush
 	}
 	def receive(c: Connection): Map[A, B] = {
 		var result = Map[A, B]()
@@ -107,6 +144,7 @@ class ListPacketFormat[A](formatter: PacketFormat[A]) extends PacketFormat[List[
 		for (x <- list) {
 			formatter.send(x, c)
 		}
+		c.flush
 	}
 	def receive(c: Connection): List[A] = {
 		var result = List[A]()
