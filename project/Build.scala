@@ -5,12 +5,15 @@ object GameEngineBuild extends Build {
 	object Deps {
 		object V {
 			val Scala = "2.10.1"
+			val Scalatest = "2.0.M5b"
 		}
+		val Scalatest = "org.scalatest" %% "scalatest" % V.Scalatest % "test"
 	}
 
 	override lazy val settings = super.settings ++ Seq(
 		scalaVersion := Deps.V.Scala,
-		scalacOptions ++= Seq("-deprecation", "-feature")
+		scalacOptions ++= Seq("-deprecation", "-feature"),
+		libraryDependencies += Deps.Scalatest
 	)
 
 	lazy val root = Project("game-engine", file("."), settings = Project.defaultSettings) aggregate (core, functional, demos, net, states)
