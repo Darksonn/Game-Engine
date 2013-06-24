@@ -18,7 +18,7 @@ trait Style { this: StyledGame =>
 	override def postUpdate(): Seq[ControlUpdate] = Seq()
 }
 
-private[gameengine] class PollingInputState {
+class PollingInputState {
 	private var keysDown = Set[Key]()
 	def keyDown(key: Key) = keysDown.contains(key)
 
