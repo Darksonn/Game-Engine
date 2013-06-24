@@ -89,6 +89,7 @@ package object impl {
 			}
 			val nowTime = System.nanoTime()
 			Thread.sleep(((nspf - (nowTime - lastTime)) / 1000000L) max 1L)
+			lastTime = System.nanoTime()
 		}
 	}
 
