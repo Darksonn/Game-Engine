@@ -60,7 +60,7 @@ trait EventInputStyle extends Style { this: Game =>
 	}
 
 	def on: PartialFunction[InputEvent, Unit]
-	def unhandled(evs: Seq[InputEvent])
+	def unhandled(evs: Seq[InputEvent]) {}
 }
 
 trait ControlUpdateAccumulatingStyle extends Style { this: Game =>
