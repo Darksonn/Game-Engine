@@ -47,16 +47,16 @@ sealed trait GenericEvent extends InputEvent
 case object CloseRequestedEvent extends GenericEvent
 
 trait Output {
-	def withRotation(radians: Double)(body: => Unit)
-	def withScaling(scaleX: Double, scaleY: Double)(body: => Unit)
-	def withTranslation(deltaX: Double, deltaY: Double)(body: => Unit)
-	def drawFilledCircle(c: Color)
-	def drawFilledRect(c: Color)
-	def drawCircle(c: Color)
-	def drawRect(c: Color)
-	def drawFilledOval(x: Double, y: Double, w: Double, h: Double, c: Color)
-	def drawFilledRect(x: Double, y: Double, w: Double, h: Double, c: Color)
-	def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color)
-	def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color)
-	def draw(drawable: Drawable)
+	def withRotation[A](radians: Double)(body: => A): A
+	def withScaling[A](scaleX: Double, scaleY: Double)(body: => A): A
+	def withTranslation[A](deltaX: Double, deltaY: Double)(body: => A): A
+	def drawFilledCircle(c: Color): Unit
+	def drawFilledRect(c: Color): Unit
+	def drawCircle(c: Color): Unit
+	def drawRect(c: Color): Unit
+	def drawFilledOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
+	def drawFilledRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
+	def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
+	def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
+	def draw(drawable: Drawable): Unit
 }
