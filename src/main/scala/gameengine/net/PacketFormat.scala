@@ -5,7 +5,8 @@ import java.io.IOException
 
 trait PacketFormat[T] {
 	def send(obj: T, c: Connection): Unit
-	def receive(c: Connection): T
+	//Receive wont block, if None is returned then either nothing have ben read or everything have ben unread again.
+	def receive(c: Connection): Option[T]
 }
 object PacketFormat {
 	def combine[A, B](p1: PacketFormat[A], p2: PacketFormat[B]): PacketFormat[(A, B)] = new PacketFormat[(A, B)] {
@@ -70,49 +71,88 @@ object BytePacketFormat extends PacketFormat[Byte] {
 		c.out.writeByte(b)
 		c.flush
 	}
-	def receive(c: Connection): Byte = c.in.readByte()
+	def receive(c: Connection): Option[Byte] = {
+		if (c.readableBytes() == 0)
+			None
+		Option(c.in.readByte())
+	}
 }
 object ShortPacketFormat extends PacketFormat[Short] {
 	def send(short: Short, c: Connection): Unit = {
 		c.out.writeShort(short)
 		c.flush
 	}
-	def receive(c: Connection): Short = c.in.readShort()
+	def receive(c: Connection): Option[Short] = {
+		if (c.readableBytes() < 2)
+			None
+		Option(c.in.readShort())
+	}
 }
 object IntPacketFormat extends PacketFormat[Int] {
 	def send(i: Int, c: Connection): Unit = {
 		c.out.writeInt(i)
 		c.flush
 	}
-	def receive(c: Connection): Int = c.in.readInt()
+	def receive(c: Connection): Option[Int] = {
+		if (c.readableBytes() < 4)
+			None
+		Option(c.in.readInt())
+	}
+}
+object LongPacketFormat extends PacketFormat[Long] {
+	def send(i: Long, c: Connection): Unit = {
+		c.out.writeLong(i)
+		c.flush
+	}
+	def receive(c: Connection): Option[Long] = {
+		if (c.readableBytes() < 8)
+			None
+		Option(c.in.readLong())
+	}
 }
 object FloatPacketFormat extends PacketFormat[Float] {
 	def send(i: Float, c: Connection): Unit = {
 		c.out.writeFloat(i)
 		c.flush
 	}
-	def receive(c: Connection): Float = c.in.readFloat()
+	def receive(c: Connection): Option[Float] = {
+		if (c.readableBytes() < 4)
+			None
+		Option(c.in.readFloat())
+	}
 }
 object DoublePacketFormat extends PacketFormat[Double] {
 	def send(i: Double, c: Connection): Unit = {
 		c.out.writeDouble(i)
 		c.flush
 	}
-	def receive(c: Connection): Double = c.in.readDouble()
+	def receive(c: Connection): Option[Double] = {
+		if (c.readableBytes() < 8)
+			None
+		Option(c.in.readDouble())
+	}
 }
 object BooleanPacketFormat extends PacketFormat[Boolean] {
 	def send(i: Boolean, c: Connection): Unit = {
-		c.out.writeBoolean(i)
+		c.out.writeByte(if (i) {1} else {0})
 		c.flush
 	}
-	def receive(c: Connection): Boolean = c.in.readBoolean()
+	def receive(c: Connection): Option[Boolean] = {
+		if (c.readableBytes() == 0)
+			None
+		Option(c.in.readByte() == 0)
+	}	
 }
 object CharPacketFormat extends PacketFormat[Char] {
 	def send(i: Char, c: Connection): Unit = {
 		c.out.writeChar(i)
 		c.flush
 	}
-	def receive(c: Connection): Char = c.in.readChar()
+	def receive(c: Connection): Option[Char] = {
+		if (c.readableBytes() < 2)
+			None
+		Option(c.in.readChar())
+	}
 }
 class MapPacketFormat[A,B](formatterA: PacketFormat[A], formatterB: PacketFormat[B]) extends PacketFormat[Map[A, B]] {
 	def send(map: Map[A, B], c: Connection):Unit = {
@@ -127,13 +167,25 @@ class MapPacketFormat[A,B](formatterA: PacketFormat[A], formatterB: PacketFormat
 	}
 	def receive(c: Connection): Map[A, B] = {
 		var result = Map[A, B]()
+		if (c.readableBytes() < 4)
+			None
 		val l = c.in.readInt()
 		for (_ <- 0 to l) {
 			val k = formatterA.receive(c)
+			if (k == None) {
+				send(result, Connection(c.in, c.unreadStream))
+				None
+			}
 			val v = formatterB.receive(c)
+			if (v == None) {
+				val c2 = Connection(c.in, c.unreadStream)
+				send(result, c2)
+				formatterA.send(k, c2)
+				None
+			}
 			result = Map(k -> v) ++ result
 		}
-		return result
+		Option(result)
 	}
 }
 class ListPacketFormat[A](formatter: PacketFormat[A]) extends PacketFormat[List[A]] {
@@ -148,9 +200,15 @@ class ListPacketFormat[A](formatter: PacketFormat[A]) extends PacketFormat[List[
 	}
 	def receive(c: Connection): List[A] = {
 		var result = List[A]()
+		if (c.readableBytes() < 4)
+			None
 		val l = c.in.readInt()
 		for (_ <- 0 to l) {
 			val obj = formatter.receive(c)
+			if (obj == None) {
+				send(result, Connection(c.in, c.unreadStream))
+				None
+			}
 			result = List(obj) ::: result
 		}
 		return result
