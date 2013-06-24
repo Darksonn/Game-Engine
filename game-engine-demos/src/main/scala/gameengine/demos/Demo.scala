@@ -12,11 +12,11 @@ object Demo extends Game with EventInputStyle with ControlUpdateAccumulatingStyl
 	var angle = 0.0
 	val angleDelta = math.Pi * 2 / 360
 
-	def update(in: Input) = {
+	override def update(in: Input) = {
 		angle += angleDelta
 		Seq()
 	}
-	def render(out: Output) = {
+	override def render(out: Output) {
 		import out._
 		withScaling(width, height) {
 			drawFilledRect(java.awt.Color.BLACK)

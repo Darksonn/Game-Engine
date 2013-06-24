@@ -4,18 +4,16 @@ import java.awt.Color
 import java.awt.event.{MouseEvent => AWTMouseEvent}
 
 trait BaseGame {
-
 	val width: Int
 	val height: Int
 	val title: String
 
 	def step(in: Input): Seq[ControlUpdate]
-	def render(gfx: Output): Unit
+	def render(gfx: Output)
 
-	def main(args: Array[String]): Unit = {
+	def main(args: Array[String]) {
 		impl.run(this)
 	}
-
 }
 
 sealed trait Key
@@ -49,16 +47,16 @@ sealed trait GenericEvent extends InputEvent
 case object CloseRequestedEvent extends GenericEvent
 
 trait Output {
-	def withRotation(radians: Double)(body: => Unit): Unit
-	def withScaling(scaleX: Double, scaleY: Double)(body: => Unit): Unit
-	def withTranslation(deltaX: Double, deltaY: Double)(body: => Unit): Unit
-	def drawFilledCircle(c: Color): Unit
-	def drawFilledRect(c: Color): Unit
-	def drawCircle(c: Color): Unit
-	def drawRect(c: Color): Unit
-	def drawFilledOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
-	def drawFilledRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
-	def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
-	def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
-	def draw(drawable: Drawable): Unit
+	def withRotation(radians: Double)(body: => Unit)
+	def withScaling(scaleX: Double, scaleY: Double)(body: => Unit)
+	def withTranslation(deltaX: Double, deltaY: Double)(body: => Unit)
+	def drawFilledCircle(c: Color)
+	def drawFilledRect(c: Color)
+	def drawCircle(c: Color)
+	def drawRect(c: Color)
+	def drawFilledOval(x: Double, y: Double, w: Double, h: Double, c: Color)
+	def drawFilledRect(x: Double, y: Double, w: Double, h: Double, c: Color)
+	def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color)
+	def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color)
+	def draw(drawable: Drawable)
 }
