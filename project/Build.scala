@@ -16,7 +16,10 @@ object GameEngineBuild extends Build {
 		libraryDependencies += Deps.Scalatest
 	)
 
-	lazy val root = Project("game-engine", file("."), settings = Project.defaultSettings) aggregate (core, functional, demos, net, states)
+	lazy val root = Project("game-engine", file("."), settings = Project.defaultSettings ++ Seq(
+		run in Runtime <<= run in (demos, Runtime),
+		run in Compile <<= run in Runtime
+	)) aggregate (core, functional, demos, net, states)
 
 	lazy val core = Project("game-engine-core", file("game-engine-core"), settings = Project.defaultSettings)
 	lazy val functional = Project("game-engine-frp", file("game-engine-frp"), settings = Project.defaultSettings) dependsOn core
