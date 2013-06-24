@@ -10,11 +10,15 @@ trait Connection {
 	def readableBytes: Int
 	def unread(byte: Byte): Unit
 	def unread(bytes: Array[Byte]): Unit
+	def unread(bytes: Array[Byte], off: Int, len: Int): Unit
 	def unreadStream: DataOutputStream
 }
 sealed class UnreadOutputStream(conn: Connection) extends OutputStream {
+	override
 	def write(b: Int) = conn.unread(b.byteValue)
+	override
 	def write(b: Array[Byte]) = conn.unread(b)
+	override
 	def write(b: Array[Byte], off: Int, len: Int) = conn.unread(b, off, len)
 }
 object Connection {
@@ -36,12 +40,12 @@ object Connection {
 				out.close
 				socket.close
 			}
-			def readableData: Int = in.available()
+			def readableBytes: Int = in.available()
 			def flush: Unit = out.flush
 			def unread(byte: Byte): Unit = input2.unread(byte)
 			def unread(bytes: Array[Byte]): Unit = input2.unread(bytes)
 			def unread(bytes: Array[Byte], off: Int, len: Int): Unit = input2.unread(bytes, off, len)
-			def unreadStream: OutputStream = new DataOutputStream(new UnreadOutputStream(this))
+			def unreadStream: DataOutputStream = new DataOutputStream(new UnreadOutputStream(this))
 		}
 	}
 	def apply(input: InputStream, output: OutputStream): Connection = {
@@ -55,10 +59,12 @@ object Connection {
 				in.close
 				out.close
 			}
+			def readableBytes: Int = in.available()
 			def flush: Unit = out.flush
 			def unread(byte: Byte): Unit = input2.unread(byte)
 			def unread(bytes: Array[Byte]): Unit = input2.unread(bytes)
-			def unreadStream: OutputStream = new DataOutputStream(new UnreadOutputStream(this))
+			def unread(bytes: Array[Byte], off: Int, len: Int): Unit = input2.unread(bytes, off, len)
+			def unreadStream: DataOutputStream = new DataOutputStream(new UnreadOutputStream(this))
 		}
 	}
 }
