@@ -49,9 +49,9 @@ sealed trait GenericEvent extends InputEvent
 case object CloseRequestedEvent extends GenericEvent
 
 trait Output {
-	def withRotation(radians: Double)(body: => Unit): Unit
-	def withScaling(scaleX: Double, scaleY: Double)(body: => Unit): Unit
-	def withTranslation(deltaX: Double, deltaY: Double)(body: => Unit): Unit
+	def withRotation[A](radians: Double)(body: => A): A
+	def withScaling[A](scaleX: Double, scaleY: Double)(body: => A): A
+	def withTranslation[A](deltaX: Double, deltaY: Double)(body: => A): A
 	def drawFilledCircle(c: Color): Unit
 	def drawFilledRect(c: Color): Unit
 	def drawCircle(c: Color): Unit
