@@ -4,7 +4,7 @@ import Keys._
 object GameEngineBuild extends Build {
 	object Deps {
 		object V {
-			val Scala = "2.10.1"
+			val Scala = "2.10.2"
 			val Scalatest = "2.0.M5b"
 		}
 		val Scalatest = "org.scalatest" %% "scalatest" % V.Scalatest % "test"
