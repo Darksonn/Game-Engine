@@ -1,13 +1,8 @@
-//Commented out because I wanted to compile my stuff.
-//When you remove the commenting, please fix your error at line 40:
-//type mismatch:
-//found   : None.type
-//required: Seq[gameengine.ControlUpdate]
-/*package gameengine.demos
+package gameengine.demos
 
 import gameengine._
 
-object DemoAdvanced extends Game {
+object DemoAdvanced extends BaseGame {
 
 	val width = 640
 	val height = 480
@@ -42,7 +37,7 @@ object DemoAdvanced extends Game {
 
 	def step(in: Input) = {
 		entities = entities.flatMap(e => e.step(in, entities))
-		None
+		Seq()
 	}
 	def render(out: Output) = {
 		out.withScaling(width, height) {
@@ -55,4 +50,4 @@ object DemoAdvanced extends Game {
 		}
 	}
 
-}*/
+}

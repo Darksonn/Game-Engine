@@ -1,8 +1,9 @@
 package gameengine.demos
 
 import gameengine._
+import gameengine.styles.{ControlUpdateAccumulatingStyle, Game, EventInputStyle}
 
-object Demo extends Game {
+object Demo extends Game with EventInputStyle with ControlUpdateAccumulatingStyle {
 
 	val width = 640
 	val height = 480
@@ -11,7 +12,7 @@ object Demo extends Game {
 	var angle = 0.0
 	val angleDelta = math.Pi * 2 / 360
 
-	def step(in: Input) = {
+	def update(in: Input) = {
 		angle += angleDelta
 		Seq()
 	}
@@ -31,4 +32,7 @@ object Demo extends Game {
 		}
 	}
 
+	override val on: PartialFunction[InputEvent, Unit] = {
+		case CloseRequestedEvent => quit()
+	}
 }

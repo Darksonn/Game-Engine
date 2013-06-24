@@ -3,7 +3,7 @@ package gameengine
 import java.awt.Color
 import java.awt.event.{MouseEvent => AWTMouseEvent}
 
-trait Game {
+trait BaseGame {
 
 	val width: Int
 	val height: Int
