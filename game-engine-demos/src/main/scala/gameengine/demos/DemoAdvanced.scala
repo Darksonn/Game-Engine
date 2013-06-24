@@ -1,8 +1,9 @@
 package gameengine.demos
 
 import gameengine._
+import gameengine.styles.{ControlUpdateAccumulatingStyle, EventInputStyle, Game}
 
-object DemoAdvanced extends BaseGame {
+object DemoAdvanced extends Game with EventInputStyle with ControlUpdateAccumulatingStyle {
 
 	val width = 640
 	val height = 480
@@ -34,7 +35,7 @@ object DemoAdvanced extends BaseGame {
 
 	var entities = Seq[Entity]() //todo: fill this in
 
-	override def step(in: Input) = {
+	override def update(in: Input) = {
 		entities = entities.flatMap(e => e.step(in, entities))
 		Seq()
 	}
@@ -49,4 +50,7 @@ object DemoAdvanced extends BaseGame {
 		}
 	}
 
+	override def on = {
+		case CloseRequestedEvent => quit()
+	}
 }
