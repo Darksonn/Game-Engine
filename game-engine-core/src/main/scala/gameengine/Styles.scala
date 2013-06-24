@@ -63,7 +63,7 @@ trait EventInputStyle extends Style { this: Game =>
 	def unhandled(evs: Seq[InputEvent]) {}
 }
 
-trait ControlUpdateAccumulatingStyle extends Style { this: Game =>
+trait ImperativeControlStyle extends Style { this: Game =>
 	private var controlUpdates = Seq[ControlUpdate]()
 
 	def quit() {

@@ -1,9 +1,9 @@
 package gameengine.demos
 
 import gameengine._
-import gameengine.styles.{ControlUpdateAccumulatingStyle, Game, EventInputStyle}
+import gameengine.styles.{ImperativeControlStyle, Game, EventInputStyle}
 
-object Demo extends Game with EventInputStyle with ControlUpdateAccumulatingStyle {
+object Demo extends Game with EventInputStyle with ImperativeControlStyle {
 
 	val width = 640
 	val height = 480
