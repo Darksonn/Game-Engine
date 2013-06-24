@@ -12,7 +12,7 @@ object GameEngineBuild extends Build {
 
 	override lazy val settings = super.settings ++ Seq(
 		scalaVersion := Deps.V.Scala,
-		scalacOptions ++= Seq("-deprecation", "-feature"),
+		scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
 		libraryDependencies += Deps.Scalatest
 	)
 
