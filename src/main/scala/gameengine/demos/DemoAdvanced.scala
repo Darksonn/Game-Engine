@@ -2,7 +2,7 @@ package gameengine.demos
 
 import gameengine._
 
-object DemoAdvanced extends Game {
+object DemoAdvanced extends BaseGame {
 
 	val width = 640
 	val height = 480

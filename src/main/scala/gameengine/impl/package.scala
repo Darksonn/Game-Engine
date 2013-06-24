@@ -14,7 +14,7 @@ package object impl {
 	val fps = 60
 	val nspf = 1000000000L / fps
 
-	class GameComponent(game: Game) extends JComponent {
+	class GameComponent(game: BaseGame) extends JComponent {
 		setPreferredSize(new Dimension(game.width, game.height))
 	}
 
@@ -53,7 +53,7 @@ package object impl {
 
 	}
 
-	def run(game: gameengine.Game): Unit = {
+	def run(game: gameengine.BaseGame): Unit = {
 		val window = new JFrame(game.title)
 		val comp = new GameComponent(game)
 
