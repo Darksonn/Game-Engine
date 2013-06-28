@@ -55,8 +55,8 @@ trait PollingInputStyle extends Style { this: Game =>
 
 trait EventInputStyle extends Style { this: Game =>
 	override def preUpdate(input: Input) {
-		unhandled(input.queue.filterNot { ev => on.lift(ev).isDefined })
 		super.preUpdate(input)
+		unhandled(input.queue.filterNot { ev => on.lift(ev).isDefined })
 	}
 
 	def on: PartialFunction[InputEvent, Unit]
