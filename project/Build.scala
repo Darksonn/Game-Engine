@@ -19,7 +19,10 @@ object GameEngineBuild extends Build {
 	)
 
 	lazy val masterSettings = Project.defaultSettings ++ ScctPlugin.mergeReportSettings ++ CoverallsPlugin.coverallsSettings
-	lazy val subProjectSettings = Project.defaultSettings ++ ScctPlugin.instrumentSettings
+	lazy val subProjectSettings = Project.defaultSettings ++ ScctPlugin.instrumentSettings ++ Seq(
+		parallelExecution in Test := false,
+		parallelExecution in ScctPlugin.ScctTest := false
+	)
 
 	lazy val root = Project("game-engine", file("."), settings = masterSettings ++ Seq(
 		run in Runtime <<= run in (demos, Runtime),
