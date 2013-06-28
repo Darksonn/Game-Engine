@@ -17,7 +17,7 @@ object GameEngineBuild extends Build {
 	override lazy val settings = super.settings ++ Seq(
 		scalaVersion := Deps.V.Scala,
 		scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
-		libraryDependencies ++= Seq(Deps.Scalatest, Deps.Scalatest)
+		libraryDependencies ++= Seq(Deps.Scalatest, Deps.Scalamock)
 	)
 
 	lazy val masterSettings = Project.defaultSettings ++ ScctPlugin.mergeReportSettings ++ CoverallsPlugin.coverallsSettings

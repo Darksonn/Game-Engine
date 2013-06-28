@@ -1,6 +1,7 @@
 package gameengine.styles
 
 import org.scalatest.FunSpec
+import org.scalamock.scalatest.MockFactory
 import gameengine._
 import java.awt.event.KeyEvent
 import gameengine.KeyDownEvent
@@ -54,6 +55,40 @@ class PollingInputStateSpec extends FunSpec {
 			assert(s.closeRequested === false)
 			s.update(Input(Seq(CloseRequestedEvent)))
 			assert(s.closeRequested === true)
+		}
+	}
+}
+
+class PollingInputStyleSpec extends FunSpec with MockFactory {
+	describe("PollingInputStyle") {
+		it("should forward the state queries to the backing state") {
+			val state = mock[PollingInputState]
+
+			toMockFunction1(state.keyDown _).expects(Key.LeftMouse).returning(true).once()
+			toMockFunction0(state.mousePos _).expects().returns(Point(1, 2)).once()
+			toMockFunction0(state.closeRequested _).expects().returns(true).once()
+
+			val game = new TestGame with PollingInputStyle {
+				override val pollingInputState = state
+			}
+
+			assert(game.keyDown(Key.LeftMouse) === true)
+			assert(game.mousePos === Point(1, 2))
+			assert(game.closeRequested === true)
+		}
+
+		describe("preUpdate") {
+			it("should feed the new updates into the state") {
+				val state = mock[PollingInputState]
+
+				(state.update _).expects(Input(Seq())).once()
+
+				val game = new TestGame with PollingInputStyle {
+					override val pollingInputState = state
+				}
+
+				game.preUpdate(Input(Seq()))
+			}
 		}
 	}
 }
