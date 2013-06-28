@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 
 package object pimps {
-	implicit class AtomicReferencePimps[T](val ar: AtomicReference[T]) extends AnyVal {
+	implicit class AtomicReferencePimps[T](val ar: AtomicReference[T]) {
 		/**
 		 * Try to compare-and-set the value until it succeeds
 		 * @param f Function that transforms the current value to the new value
