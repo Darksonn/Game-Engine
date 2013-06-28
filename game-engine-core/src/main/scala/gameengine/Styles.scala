@@ -64,7 +64,7 @@ trait EventInputStyle extends Style { this: Game =>
 }
 
 trait ImperativeControlStyle extends Style { this: Game =>
-	private var controlUpdates = Seq[ControlUpdate]()
+	private[gameengine] var controlUpdates = Seq[ControlUpdate]()
 
 	def quit() {
 		controlUpdates :+= ControlUpdate.Quit

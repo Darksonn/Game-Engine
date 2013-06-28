@@ -77,7 +77,7 @@ class EventInputStyleSpec extends FunSpec {
 			it("should fire event handlers after bubbling") {
 				var events = Seq[InputEvent]()
 
-				val handler = new TestGame with UpdateHooks with EventInputStyle {
+				val game = new TestGame with UpdateHooks with EventInputStyle {
 					override def postPreUpdate(input: Input) {
 						assert(events === Seq()) // Verify events is still unchanged
 					}
@@ -87,7 +87,65 @@ class EventInputStyleSpec extends FunSpec {
 					}
 				}
 
-				handler.preUpdate(Input(Seq(CloseRequestedEvent)))
+				game.preUpdate(Input(Seq(CloseRequestedEvent)))
+			}
+		}
+	}
+}
+
+class ImperativeControlStyleSpec extends FunSpec {
+	describe("ImperativeControlStyle") {
+		describe("quit") {
+			it("should add a quit request to the update queue") {
+				val game = new TestGame with ImperativeControlStyle
+				assert(game.controlUpdates === Seq())
+				game.quit()
+				assert(game.controlUpdates === Seq(ControlUpdate.Quit))
+			}
+		}
+
+		describe("postUpdate") {
+			it("should clear and return the update queue") {
+				val game = new TestGame with ImperativeControlStyle
+				game.controlUpdates = Seq(ControlUpdate.Quit)
+				assert(game.postUpdate() === Seq(ControlUpdate.Quit))
+				assert(game.controlUpdates === Seq())
+			}
+		}
+	}
+}
+
+class GameSpec extends FunSpec {
+	describe("Game") {
+		describe("step") {
+			it("should call all three update methods in order") {
+				var called = Seq[String]()
+
+				val game = new TestGame {
+					override def preUpdate(input: Input) { called :+= "preUpdate" }
+					override def update(input: Input) = { called :+= "update"; Seq() }
+					override def postUpdate() = { called :+= "postUpdate"; Seq() }
+				}
+
+				game.step(Input(Seq()))
+				assert(called === Seq("preUpdate", "update", "postUpdate"))
+			}
+
+			it("should aggregate the return values from update and postUpdate") {
+				val game = new TestGame {
+					override def update(input: Input) = Seq(ControlUpdate.Quit, ControlUpdate.Quit)
+					override def postUpdate() = Seq(ControlUpdate.Quit)
+				}
+
+				assert(game.step(Input(Seq())) === Seq(ControlUpdate.Quit, ControlUpdate.Quit, ControlUpdate.Quit))
+			}
+		}
+
+		describe("postUpdate") {
+			it("should return nothing") {
+				val game = new TestGame {}
+
+				assert(game.postUpdate() === Seq())
 			}
 		}
 	}
