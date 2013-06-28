@@ -3,9 +3,9 @@ package gameengine.styles
 import gameengine._
 
 trait Game extends BaseGame {
-	def preUpdate(input: Input)
+	def preUpdate(input: Input) {}
 	def update(input: Input): Seq[ControlUpdate]
-	def postUpdate(): Seq[ControlUpdate]
+	def postUpdate(): Seq[ControlUpdate] = Seq()
 
 	final def step(input: Input): Seq[ControlUpdate] = {
 		preUpdate(input)
