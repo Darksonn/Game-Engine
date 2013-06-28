@@ -57,3 +57,66 @@ class PollingInputStateSpec extends FunSpec {
 		}
 	}
 }
+
+class EventInputStyleSpec extends FunSpec {
+	describe("EventInputStyle") {
+		describe("preUpdate") {
+			it("should fire event handlers") {
+				var events = Seq[InputEvent]()
+
+				val handler = new TestGame with EventInputStyle {
+					override def on = {
+						case x => events :+= x
+					}
+				}
+
+				handler.preUpdate(Input(Seq(CloseRequestedEvent)))
+				assert(events === Seq(CloseRequestedEvent))
+			}
+
+			it("should fire event handlers after bubbling") {
+				var events = Seq[InputEvent]()
+
+				val handler = new TestGame with UpdateHooks with EventInputStyle {
+					override def postPreUpdate(input: Input) {
+						assert(events === Seq()) // Verify events is still unchanged
+					}
+
+					override def on = {
+						case x => events :+= x
+					}
+				}
+
+				handler.preUpdate(Input(Seq(CloseRequestedEvent)))
+			}
+		}
+	}
+}
+
+/**
+ * Game subtrait that provides some defaults that otherwise quickly get repetitive or don't make sense for the tests
+ */
+trait TestGame extends Game {
+	override val title = ""
+	override val (width, height) = (0, 0)
+
+	override def render(gfx: Output) {}
+	override def update(input: Input): Seq[ControlUpdate] = Seq()
+}
+
+trait UpdateHooks extends Style { this: Game =>
+	def prePreUpdate(input: Input) {}
+	def postPreUpdate(input: Input) {}
+
+	override def preUpdate(input: Input) {
+		prePreUpdate(input)
+		super.preUpdate(input)
+		postPreUpdate(input)
+	}
+
+	def prePostUpdate(): Seq[ControlUpdate] = Seq()
+	def postPostUpdate(): Seq[ControlUpdate] = Seq()
+
+	override def postUpdate(): Seq[ControlUpdate] =
+		prePostUpdate() ++ super.postUpdate() ++ postPostUpdate()
+}
