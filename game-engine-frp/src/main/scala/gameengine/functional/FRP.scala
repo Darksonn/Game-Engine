@@ -4,6 +4,8 @@ import scalaz._
 import scalaz.syntax._
 import scalaz.effect._
 
+import scala.language.higherKinds
+
 package object functional {
 	
 	type NextT[M[+_], +A] = Kleisli[M, Input, A]
