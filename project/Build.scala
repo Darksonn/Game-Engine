@@ -8,18 +8,23 @@ object GameEngineBuild extends Build {
 		object V {
 			val Scala = "2.10.2"
 			val Scalatest = "2.0.M5b"
+			val Scalamock = "3.0.1"
 		}
 		val Scalatest = "org.scalatest" %% "scalatest" % V.Scalatest % "test"
+		val Scalamock = "org.scalamock" %% "scalamock-scalatest-support" % V.Scalamock % "test"
 	}
 
 	override lazy val settings = super.settings ++ Seq(
 		scalaVersion := Deps.V.Scala,
 		scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
-		libraryDependencies += Deps.Scalatest
+		libraryDependencies ++= Seq(Deps.Scalatest, Deps.Scalamock)
 	)
 
 	lazy val masterSettings = Project.defaultSettings ++ ScctPlugin.mergeReportSettings ++ CoverallsPlugin.coverallsSettings
-	lazy val subProjectSettings = Project.defaultSettings ++ ScctPlugin.instrumentSettings
+	lazy val subProjectSettings = Project.defaultSettings ++ ScctPlugin.instrumentSettings ++ Seq(
+		parallelExecution in Test := false,
+		parallelExecution in ScctPlugin.ScctTest := false
+	)
 
 	lazy val root = Project("game-engine", file("."), settings = masterSettings ++ Seq(
 		run in Runtime <<= run in (demos, Runtime),

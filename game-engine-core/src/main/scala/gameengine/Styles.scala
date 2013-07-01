@@ -3,9 +3,9 @@ package gameengine.styles
 import gameengine._
 
 trait Game extends BaseGame {
-	def preUpdate(input: Input)
+	def preUpdate(input: Input) {}
 	def update(input: Input): Seq[ControlUpdate]
-	def postUpdate(): Seq[ControlUpdate]
+	def postUpdate(): Seq[ControlUpdate] = Seq()
 
 	final def step(input: Input): Seq[ControlUpdate] = {
 		preUpdate(input)
@@ -42,7 +42,7 @@ class PollingInputState {
 }
 
 trait PollingInputStyle extends Style { this: Game =>
-	private val pollingInputState = new PollingInputState
+	private[gameengine] val pollingInputState = new PollingInputState
 	def keyDown(key: Key) = pollingInputState.keyDown(key)
 	def mousePos = pollingInputState.mousePos
 	def closeRequested = pollingInputState.closeRequested
@@ -55,8 +55,8 @@ trait PollingInputStyle extends Style { this: Game =>
 
 trait EventInputStyle extends Style { this: Game =>
 	override def preUpdate(input: Input) {
-		unhandled(input.queue.filterNot { ev => on.lift(ev).isDefined })
 		super.preUpdate(input)
+		unhandled(input.queue.filterNot { ev => on.lift(ev).isDefined })
 	}
 
 	def on: PartialFunction[InputEvent, Unit]
@@ -64,7 +64,7 @@ trait EventInputStyle extends Style { this: Game =>
 }
 
 trait ImperativeControlStyle extends Style { this: Game =>
-	private var controlUpdates = Seq[ControlUpdate]()
+	private[gameengine] var controlUpdates = Seq[ControlUpdate]()
 
 	def quit() {
 		controlUpdates :+= ControlUpdate.Quit
