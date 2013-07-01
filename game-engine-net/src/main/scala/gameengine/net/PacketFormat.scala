@@ -33,8 +33,8 @@ object PacketFormat {
 			}
 		}
 		def blockReceive(c: Connection): (A, B) = {
-			val a = p1.receive(c)
-			val b = p2.receive(c)
+			val a = p1.blockReceive(c)
+			val b = p2.blockReceive(c)
 			return (a, b)
 		}
 	}
@@ -155,7 +155,7 @@ object DoublePacketFormat extends PacketFormat[Double] {
 }
 object BigIntPacketFormat extends PacketFormat[BigInt] {
 	def send(i: BigInt, c: Connection): Unit = {
-		val bytes = i.toByteArray()
+		val bytes = i.toByteArray
 		c.out.writeInt(bytes.length)
 		c.out.write(bytes)
 		c.flush
@@ -170,13 +170,13 @@ object BigIntPacketFormat extends PacketFormat[BigInt] {
 		}
 		val bytes = new Array[Byte](length)
 		c.in.read(bytes)
-		Some(new BigInt(new BigInteger(bytes)))
+		Some(new BigInt(new java.math.BigInteger(bytes)))
 	}
 	def blockReceive(c: Connection): BigInt = {
 		val length = c.in.readInt()
 		val bytes = new Array[Byte](length)
 		c.in.read(bytes)
-		new BigInt(new BigInteger(bytes))
+		new BigInt(new java.math.BigInteger(bytes))
 	}
 }
 object BooleanPacketFormat extends PacketFormat[Boolean] {
@@ -248,8 +248,8 @@ class MapPacketFormat[A,B](formatterA: PacketFormat[A], formatterB: PacketFormat
 		var result = Map[A, B]()
 		val l = c.in.readInt()
 		for (_ <- 0 until l) {
-			val k = formatterA.receive(c)
-			val v = formatterB.receive(c)
+			val k = formatterA.blockReceive(c)
+			val v = formatterB.blockReceive(c)
 			result = Map(k -> v) ++ result
 		}
 		result
@@ -274,10 +274,10 @@ class ListPacketFormat[A](formatter: PacketFormat[A]) extends PacketFormat[List[
 			val obj = formatter.receive(c)
 			obj match {
 				case None =>
-					send(result.reverse(), Connection(c.in, c.unreadStream))
+					send(result.reverse, Connection(c.in, c.unreadStream))
 					None
 				case Some(obj2) =>
-					result = result ::: List(obj2)
+					result = result ::: List[A](obj2)
 			}
 		}
 		Some(result)
@@ -286,8 +286,8 @@ class ListPacketFormat[A](formatter: PacketFormat[A]) extends PacketFormat[List[
 		var result = List[A]()
 		val l = c.in.readInt()
 		for (_ <- 0 until l) {
-			val obj = formatterA.receive(c)
-			result = result ::: List(obj)
+			val obj = formatter.blockReceive(c)
+			result = result ::: List[A](obj)
 		}
 		result
 	}
