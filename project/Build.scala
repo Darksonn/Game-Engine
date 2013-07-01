@@ -28,7 +28,7 @@ object GameEngineBuild extends Build {
 
 	lazy val core = Project("game-engine-core", file("game-engine-core"), settings = subProjectSettings)
 	lazy val functional = Project("game-engine-frp", file("game-engine-frp"), settings = subProjectSettings) dependsOn core
-	lazy val demos = Project("game-engine-demos", file("game-engine-demos"), settings = subProjectSettings) dependsOn core
+	lazy val demos = Project("game-engine-demos", file("game-engine-demos"), settings = subProjectSettings) dependsOn (core,net)
 	lazy val net = Project("game-engine-net", file("game-engine-net"), settings = subProjectSettings) dependsOn core
 	lazy val states = Project("game-engine-states", file("game-engine-states"), settings = subProjectSettings) dependsOn core
 }
