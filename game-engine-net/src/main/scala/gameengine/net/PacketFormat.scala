@@ -7,6 +7,7 @@ trait PacketFormat[T] {
 	def send(obj: T, c: Connection): Unit
 	//Receive wont block, if None is returned then either nothing have ben read or everything have ben unread again.
 	def receive(c: Connection): Option[T]
+	def blockReceive(c: Connection): T
 }
 object PacketFormat {
 	def combine[A, B](p1: PacketFormat[A], p2: PacketFormat[B]): PacketFormat[(A, B)] = new PacketFormat[(A, B)] {
@@ -31,6 +32,11 @@ object PacketFormat {
 					}
 			}
 		}
+		def blockReceive(c: Connection): (A, B) = {
+			val a = p1.blockReceive(c)
+			val b = p2.blockReceive(c)
+			return (a, b)
+		}
 	}
 }
 
@@ -54,6 +60,14 @@ object StringPacketFormat extends PacketFormat[String] {
 		}
 		Some(new String(chars))
 	}
+	def blockReceive(c: Connection): String = {
+		val size = c.in.readInt
+		val chars = new Array[Char](size)
+		for (i <- 0 until size) {
+			chars(i) = c.in.readChar
+		}
+		new String(chars)
+	}
 }
 object BytePacketFormat extends PacketFormat[Byte] {
 	def send(b: Byte, c: Connection): Unit = {
@@ -64,6 +78,9 @@ object BytePacketFormat extends PacketFormat[Byte] {
 		if (c.readableBytes == 0)
 			None
 		Some(c.in.readByte())
+	}
+	def blockReceive(c: Connection): Byte = {
+		c.in.readByte()
 	}
 }
 object ShortPacketFormat extends PacketFormat[Short] {
@@ -76,6 +93,9 @@ object ShortPacketFormat extends PacketFormat[Short] {
 			None
 		Some(c.in.readShort())
 	}
+	def blockReceive(c: Connection): Short = {
+		c.in.readShort()
+	}
 }
 object IntPacketFormat extends PacketFormat[Int] {
 	def send(i: Int, c: Connection): Unit = {
@@ -86,6 +106,9 @@ object IntPacketFormat extends PacketFormat[Int] {
 		if (c.readableBytes < 4)
 			None
 		Some(c.in.readInt())
+	}
+	def blockReceive(c: Connection): Int = {
+		c.in.readInt()
 	}
 }
 object LongPacketFormat extends PacketFormat[Long] {
@@ -98,6 +121,9 @@ object LongPacketFormat extends PacketFormat[Long] {
 			None
 		Some(c.in.readLong())
 	}
+	def blockReceive(c: Connection): Long = {
+		c.in.readLong()
+	}
 }
 object FloatPacketFormat extends PacketFormat[Float] {
 	def send(i: Float, c: Connection): Unit = {
@@ -108,6 +134,9 @@ object FloatPacketFormat extends PacketFormat[Float] {
 		if (c.readableBytes < 4)
 			None
 		Some(c.in.readFloat())
+	}
+	def blockReceive(c: Connection): Float = {
+		c.in.readFloat()
 	}
 }
 object DoublePacketFormat extends PacketFormat[Double] {
@@ -120,6 +149,35 @@ object DoublePacketFormat extends PacketFormat[Double] {
 			None
 		Some(c.in.readDouble())
 	}
+	def blockReceive(c: Connection): Double = {
+		c.in.readDouble()
+	}
+}
+object BigIntPacketFormat extends PacketFormat[BigInt] {
+	def send(i: BigInt, c: Connection): Unit = {
+		val bytes = i.toByteArray
+		c.out.writeInt(bytes.length)
+		c.out.write(bytes)
+		c.flush
+	}
+	def receive(c: Connection): Option[BigInt] = {
+		if (c.readableBytes < 4)
+			None
+		val length = c.in.readInt()
+		if (c.readableBytes < length) {
+			c.unreadStream.writeInt(length)
+			None
+		}
+		val bytes = new Array[Byte](length)
+		c.in.read(bytes)
+		Some(new BigInt(new java.math.BigInteger(bytes)))
+	}
+	def blockReceive(c: Connection): BigInt = {
+		val length = c.in.readInt()
+		val bytes = new Array[Byte](length)
+		c.in.read(bytes)
+		new BigInt(new java.math.BigInteger(bytes))
+	}
 }
 object BooleanPacketFormat extends PacketFormat[Boolean] {
 	def send(i: Boolean, c: Connection): Unit = {
@@ -131,6 +189,9 @@ object BooleanPacketFormat extends PacketFormat[Boolean] {
 			None
 		Some(c.in.readByte() == 0)
 	}	
+	def blockReceive(c: Connection): Boolean = {
+		c.in.readBoolean()
+	}
 }
 object CharPacketFormat extends PacketFormat[Char] {
 	def send(i: Char, c: Connection): Unit = {
@@ -141,6 +202,9 @@ object CharPacketFormat extends PacketFormat[Char] {
 		if (c.readableBytes < 2)
 			None
 		Some(c.in.readChar())
+	}
+	def blockReceive(c: Connection): Char = {
+		c.in.readChar()
 	}
 }
 class MapPacketFormat[A,B](formatterA: PacketFormat[A], formatterB: PacketFormat[B]) extends PacketFormat[Map[A, B]] {
@@ -180,6 +244,16 @@ class MapPacketFormat[A,B](formatterA: PacketFormat[A], formatterB: PacketFormat
 		}
 		Some(result)
 	}
+	def blockReceive(c: Connection): Map[A, B] = {
+		var result = Map[A, B]()
+		val l = c.in.readInt()
+		for (_ <- 0 until l) {
+			val k = formatterA.blockReceive(c)
+			val v = formatterB.blockReceive(c)
+			result = Map(k -> v) ++ result
+		}
+		result
+	}
 }
 class ListPacketFormat[A](formatter: PacketFormat[A]) extends PacketFormat[List[A]] {
 	def send(list: List[A], c: Connection):Unit = {
@@ -200,12 +274,21 @@ class ListPacketFormat[A](formatter: PacketFormat[A]) extends PacketFormat[List[
 			val obj = formatter.receive(c)
 			obj match {
 				case None =>
-					send(result, Connection(c.in, c.unreadStream))
+					send(result.reverse, Connection(c.in, c.unreadStream))
 					None
 				case Some(obj2) =>
-					result = List(obj2) ::: result
+					result = result ::: List[A](obj2)
 			}
 		}
 		Some(result)
+	}
+	def blockReceive(c: Connection): List[A] = {
+		var result = List[A]()
+		val l = c.in.readInt()
+		for (_ <- 0 until l) {
+			val obj = formatter.blockReceive(c)
+			result = result ::: List[A](obj)
+		}
+		result
 	}
 }
