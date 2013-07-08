@@ -75,6 +75,9 @@ package object impl {
 		window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
 		var running = true
 		var lastTime = System.nanoTime()
+		var tick = 0
+		val img = new BufferedImage(game.width, game.height, BufferedImage.TYPE_INT_ARGB)
+		val gfx = img.createGraphics()
 		while (running) {
 			val events = Input(eventListener.getAndClear())
 			game.step(events).foreach {
@@ -82,13 +85,19 @@ package object impl {
 					running = false
 			}
 			if (running) {
-				val img = new BufferedImage(game.width, game.height, BufferedImage.TYPE_INT_ARGB)
-				val gfx = img.createGraphics()
 				game.render(new OutputImpl(gfx))
 				comp.getGraphics.drawImage(img, 0, 0, comp)
 			}
 			val nowTime = System.nanoTime()
-			Thread.sleep(((nspf - (nowTime - lastTime)) / 1000000L) max 1L)
+			//Thread.sleep(((nspf - (nowTime - lastTime)) / 1000000L) max 1L)
+			// /* Remove the double-slashes at the start of this line to disable writing FPS.
+			val afterTime = System.nanoTime()
+			if ((tick % 10) == 0) {
+				val delta = afterTime - lastTime
+				println(1000000000.0 / delta)
+			}
+			tick += 1
+			// */
 			lastTime = System.nanoTime()
 		}
 		window.dispose()

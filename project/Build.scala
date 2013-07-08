@@ -22,6 +22,10 @@ object GameEngineBuild extends Build {
 		libraryDependencies ++= Seq(Deps.Scalatest, Deps.Scalamock)
 	)
 
+	object pfp {
+		lazy val core = ProjectRef(uri("https://github.com/tailcalled/pfp.git"), "pfp-core")
+	}
+
 	lazy val masterSettings = Project.defaultSettings ++ ScctPlugin.mergeReportSettings ++ CoverallsPlugin.coverallsSettings
 	lazy val subProjectSettings = Project.defaultSettings ++ ScctPlugin.instrumentSettings ++ Seq(
 		parallelExecution in Test := false,
@@ -34,8 +38,8 @@ object GameEngineBuild extends Build {
 	)) aggregate (core, functional, demos, net, states, lwjgl)
 
 	lazy val core = Project("game-engine-core", file("game-engine-core"), settings = Project.defaultSettings)
-	lazy val functional = Project("game-engine-frp", file("game-engine-frp"), settings = Project.defaultSettings) dependsOn core
-	lazy val demos = Project("game-engine-demos", file("game-engine-demos"), settings = Project.defaultSettings) dependsOn(core, net, functional)
+	lazy val functional = Project("game-engine-frp", file("game-engine-frp"), settings = Project.defaultSettings) dependsOn (core, pfp.core)
+	lazy val demos = Project("game-engine-demos", file("game-engine-demos"), settings = Project.defaultSettings) dependsOn(core, net, functional, pfp.core)
 	lazy val net = Project("game-engine-net", file("game-engine-net"), settings = Project.defaultSettings) dependsOn core
 	lazy val states = Project("game-engine-states", file("game-engine-states"), settings = Project.defaultSettings) dependsOn core
 	lazy val lwjgl = Project("game-engine-lwjgl", file("game-engine-lwjgl"), settings = Project.defaultSettings) settings (libraryDependencies += Deps.LWJGL) dependsOn core
