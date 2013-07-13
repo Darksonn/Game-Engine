@@ -89,8 +89,10 @@ package object impl {
 				comp.getGraphics.drawImage(img, 0, 0, comp)
 			}
 			val nowTime = System.nanoTime()
-			//Thread.sleep(((nspf - (nowTime - lastTime)) / 1000000L) max 1L)
-			// /* Remove the double-slashes at the start of this line to disable writing FPS.
+			// /* If double slashes are infront of this line, the program will attempt at limiting FPS to 60.
+			Thread.sleep(((nspf - (nowTime - lastTime)) / 1000000L) max 1L)
+			// */
+			 /* If double slashes are infront of this line, the program will write FPS.
 			val afterTime = System.nanoTime()
 			if ((tick % 10) == 0) {
 				val delta = afterTime - lastTime

@@ -9,8 +9,10 @@ object EventTest extends Game with EventInputStyle with ImperativeControlStyle {
 	val height = 480
 	val title = "Event test!"
 
-	var x = 0.0
-	var y = 0.0
+	var introPrinted = false
+
+	var x = width / 2 - 1
+	var y = width / 2 - 1
 	val speed = 1
 	var upPressed = false
 	var downPressed = false
@@ -18,6 +20,10 @@ object EventTest extends Game with EventInputStyle with ImperativeControlStyle {
 	var rightPressed = false
 
 	override def update(in: Input) = {
+		if (!introPrinted) {
+			introPrinted = true
+			println("Use the arrow keys to control the white dot");
+		}
 		if (upPressed) y -= speed
 		if (downPressed) y += speed
 		if (leftPressed) x -= speed
