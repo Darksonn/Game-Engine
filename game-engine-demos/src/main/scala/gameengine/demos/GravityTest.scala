@@ -3,7 +3,7 @@ package gameengine.demos
 import gameengine._
 import gameengine.styles.{ImperativeControlStyle, Game, EventInputStyle}
 
-object AttractedParticles extends Game with EventInputStyle with ImperativeControlStyle {
+object GravityTest extends Game with EventInputStyle with ImperativeControlStyle {
 
 	val width = 640
 	val height = 480
@@ -60,7 +60,7 @@ object AttractedParticles extends Game with EventInputStyle with ImperativeContr
 		def outsideBounds(width: Int, height: Int) = pos.x < 0 || pos.x > width || pos.y > height || pos.y < 0
 	}
 	object Particle {
-		val gravityConstant = 5
+		val gravityConstant = 10
 		def apply(pos: Vector2D) = new Particle(pos)
 	}
 
