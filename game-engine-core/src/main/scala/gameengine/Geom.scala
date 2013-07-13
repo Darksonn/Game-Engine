@@ -10,7 +10,7 @@ final class Vector2D(val x: Double, val y: Double) {
 	def +(other: Vector2D) = Vector2D(x+other.x, y+other.y)
 	def -(other: Vector2D) = Vector2D(x-other.x, y-other.y)
 	def *(other: Vector2D) = Vector2D(x*other.x-y*other.y, y*other.x+x*other.y)
-	def /(other: Vector2D) = Vector2D((x*other.x+y*other.y)/(c*c+d*d), (y*other.x-x*other.y)/(c*c+d*d))
+	def /(other: Vector2D) = Vector2D((x*other.x+y*other.y)/(other.x*other.x+other.y*other.y), (y*other.x-x*other.y)/(other.x*other.x+other.y*other.y))
 	def *(factor: Double) = Vector2D(x*factor, y*factor)
 	def normalize = Vector2D(Math.cos(angle), Math.sin(angle))
 }
