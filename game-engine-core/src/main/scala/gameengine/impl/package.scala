@@ -58,7 +58,7 @@ package object impl {
 		val comp = new GameComponent(game)
 
 		val eventListener = new EverythingListener
-		comp.addKeyListener(eventListener)
+		window.addKeyListener(eventListener)
 		comp.addMouseListener(eventListener)
 		comp.addMouseMotionListener(eventListener)
 		window.addWindowListener(eventListener)

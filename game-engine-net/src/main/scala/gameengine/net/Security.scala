@@ -41,6 +41,7 @@ object Security {
 		}
 		return a
 	}
+	def lcm(a: BigInt, b: BigInt) = (a*b)/gcd(a,b)
 	final class XOREncryptedInputStream(in: java.io.InputStream, key: Array[Byte]) extends java.io.InputStream {
 		private val rand = new SecureRandom(key.clone)
 		def getUnderlyingStream = in
@@ -142,4 +143,16 @@ object Security {
 		val s = a2.modPow(b, p)
 		return s.toByteArray
 	}
+
+	//Generates a rsa keypair, the first pair of BigInts is the public key, the last BigInt is the private key.
+	/*def generateRSAKeypair: ((BigInt, BigInt), BigInt) = {
+		val rand = new SecureRandom
+		val p = generatePrime(1024)
+		val q = generatePrime(1024)
+		val n = p*q
+		val phiOfn = (p-1)*(q-1)
+		val e = new BigInt(BigInteger.valueOf(65537))
+		var d = new
+	}*/
+
 }
