@@ -10,7 +10,7 @@ object Demo extends Game with EventInputStyle with ImperativeControlStyle {
 	val title = "Hello, World!"
 
 	var angle = 0.0
-	val angleDelta = math.Pi * 2 / 360
+	val angleDelta = math.Pi / 180
 
 	override def update(in: Input) = {
 		angle += angleDelta

@@ -1,15 +1,14 @@
 package gameengine.functional
 
 import gameengine._
-import scalaz._
-import scalaz.effect._
+import dk.tailcalled.pfp._
 
 trait FunctionalGame {
 
 	val width: Int
 	val height: Int
 	val title: String
-	def game: SignalT[({type l[+A]=WriterT[IO, Seq[ControlUpdate], A]})#l, Picture[Any]]
+	def game: Signal[(Vector[ControlUpdate], Picture[Unit])]
 
 	def main(args: Array[String]) = {
 		val self = this
@@ -18,13 +17,15 @@ trait FunctionalGame {
 			val height = self.height
 			val title = self.title
 			var state = game
+			var img: Picture[Unit] = unit[Picture[Unit]]
 			def step(in: Input) = {
-				val (controlUpdates, next) = state.tail.run(in).run.unsafePerformIO
-				state = next
-				controlUpdates
+				val now = state.now
+				img = now._2
+				state = state.later(in)
+				now._1
 			}
 			def render(gfx: Output) {
-				state.head.run(gfx).unsafePerformIO
+				img.paint(gfx)
 			}
 		}.main(args)
 	}
