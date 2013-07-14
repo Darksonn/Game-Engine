@@ -25,7 +25,7 @@ object GameEngineBuild extends Build {
 	)
 
 	object pfp {
-		lazy val core = ProjectRef(uri("https://github.com/tailcalled/pfp.git"), "pfp-core")
+		lazy val core = ProjectRef(uri("https://github.com/tailcalled/pfp.git#03d727264610bdff39692d76bdeb37792fe68734"), "pfp-core")
 	}
 
 	lazy val masterSettings = Project.defaultSettings ++ ScctPlugin.mergeReportSettings ++ CoverallsPlugin.coverallsSettings
