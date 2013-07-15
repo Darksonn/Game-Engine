@@ -11,6 +11,7 @@ object GravityTest extends Game with EventInputStyle with ImperativeControlStyle
 
 	var particles = Seq[Particle]()
 	var mouse = Point(0,0)
+	val r = new java.util.Random
 
 	override def update(in: Input) = {
 		for (p <- particles) {
@@ -24,7 +25,7 @@ object GravityTest extends Game with EventInputStyle with ImperativeControlStyle
 				case KeyDownEvent(key) =>
 					key match {
 						case Key.LeftMouse =>
-							particles = particles :+ Particle(mouse.toVector)
+							particles = particles :+ Particle(mouse.toVector, r.nextGaussian*5)
 						case _ => Unit
 					}
 				case MouseMoveEvent(to) => mouse = to
@@ -39,7 +40,7 @@ object GravityTest extends Game with EventInputStyle with ImperativeControlStyle
 			drawFilledRect(java.awt.Color.BLACK)
 		}
 		for (p <- particles) {
-			drawFilledRect(p.pos.x, p.pos.y, 3, 3, java.awt.Color.WHITE)
+			drawFilledOval(p.pos.x, p.pos.y, p.mass, p.mass, java.awt.Color.WHITE)
 		}
 	}
 
@@ -47,7 +48,7 @@ object GravityTest extends Game with EventInputStyle with ImperativeControlStyle
 		case CloseRequestedEvent => quit()
 	}
 
-	class Particle(var pos: Vector2D) {
+	class Particle(var pos: Vector2D, val mass: Double) {
 		var movement = Vector2D(0,0)
 		def update(particles: Seq[Particle]) {
 			for (p <- particles) {
@@ -61,7 +62,7 @@ object GravityTest extends Game with EventInputStyle with ImperativeControlStyle
 	}
 	object Particle {
 		val gravityConstant = 10
-		def apply(pos: Vector2D) = new Particle(pos)
+		def apply(pos: Vector2D, mass: Double) = new Particle(pos, mass)
 	}
 
 }
