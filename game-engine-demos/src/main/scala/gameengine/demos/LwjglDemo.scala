@@ -1,4 +1,4 @@
-/*package gameengine.demos
+package gameengine.demos
 
 import gameengine._
 import gameengine.lwjgl._
@@ -36,4 +36,4 @@ object LwjglDemo extends Game with LWJGLGame with EventInputStyle with Imperativ
 	override val on: PartialFunction[InputEvent, Unit] = {
 		case CloseRequestedEvent => quit()
 	}
-}*/
+}

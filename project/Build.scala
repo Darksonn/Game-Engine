@@ -15,14 +15,14 @@ object GameEngineBuild extends Build {
 		}
 		val Scalatest = "org.scalatest" %% "scalatest" % V.Scalatest % "test"
 		val Scalamock = "org.scalamock" %% "scalamock-scalatest-support" % V.Scalamock % "test"
-		/*val LWJGL = "org.lwjgl.lwjgl" % "lwjgl" % V.LWJGL
+		val LWJGL = "org.lwjgl.lwjgl" % "lwjgl" % V.LWJGL
 		val LWJGLPlatform = "org.lwjgl.lwjgl" % "lwjgl-platform" % V.LWJGL
 		val LWJGLAll = Seq(
 			LWJGL,
 			LWJGLPlatform classifier "natives-windows"
 			/*LWJGLPlatform*/ classifier "natives-linux"
 			/*LWJGLPlatform*/ classifier "natives-osx"
-		)*/
+		)
 	}
 	val os = "windows"
 	override lazy val settings = super.settings ++ Seq(
@@ -45,18 +45,12 @@ object GameEngineBuild extends Build {
 	lazy val root = Project("game-engine", file("."), settings = masterSettings ++ Seq(
 		run in Runtime <<= run in (demos, Runtime),
 		run in Compile <<= run in Runtime
-	)) aggregate (core, functional, demos, net, states/*, lwjgl*/)
+	)) aggregate (core, functional, demos, net, states, lwjgl)
 
 	lazy val core = Project("game-engine-core", file("game-engine-core"), settings = Project.defaultSettings)
-	lazy val functional = Project("game-engine-frp", file("game-engine-frp"), settings = Project.defaultSettings) /*settings (libraryDependencies ++= Deps.LWJGLAll)*/ dependsOn (core, pfp.core)
-	lazy val demos = Project("game-engine-demos", file("game-engine-demos"), settings = Project.defaultSettings ++ SbtOneJar.oneJarSettings) dependsOn(core, net, functional, pfp.core)
+	lazy val functional = Project("game-engine-frp", file("game-engine-frp"), settings = Project.defaultSettings) settings (libraryDependencies ++= Deps.LWJGLAll) dependsOn (core, pfp.core)
+	lazy val demos = Project("game-engine-demos", file("game-engine-demos"), settings = Project.defaultSettings ++ SbtOneJar.oneJarSettings) dependsOn(core, net, functional, pfp.core, lwjgl)
 	lazy val net = Project("game-engine-net", file("game-engine-net"), settings = Project.defaultSettings) dependsOn core
 	lazy val states = Project("game-engine-states", file("game-engine-states"), settings = Project.defaultSettings) dependsOn core
-	/*lazy val lwjgl = Project("game-engine-lwjgl", file("game-engine-lwjgl"), settings = Project.defaultSettings)
-	    settings (LWJGLPlugin.lwjglSettings: _*)
-	    settings (
-				//libraryDependencies ++= Deps.LWJGLAll,
-				LWJGLPlugin.lwjgl.version := Deps.V.LWJGL
-			)
-			dependsOn core*/
+	lazy val lwjgl = Project("game-engine-lwjgl", file("game-engine-lwjgl"), settings = Project.defaultSettings) settings (libraryDependencies ++= Deps.LWJGLAll) dependsOn core
 }
