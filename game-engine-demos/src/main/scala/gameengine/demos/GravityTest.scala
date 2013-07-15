@@ -25,7 +25,7 @@ object GravityTest extends Game with EventInputStyle with ImperativeControlStyle
 				case KeyDownEvent(key) =>
 					key match {
 						case Key.LeftMouse =>
-							particles = particles :+ Particle(mouse.toVector, r.nextGaussian*5)
+							particles = particles :+ Particle(mouse.toVector, 1+r.nextGaussian*5)
 						case _ => Unit
 					}
 				case MouseMoveEvent(to) => mouse = to
@@ -40,7 +40,7 @@ object GravityTest extends Game with EventInputStyle with ImperativeControlStyle
 			drawFilledRect(java.awt.Color.BLACK)
 		}
 		for (p <- particles) {
-			drawFilledOval(p.pos.x, p.pos.y, p.mass, p.mass, java.awt.Color.WHITE)
+			drawFilledOval(p.pos.x-p.mass/2, p.pos.y-p.mass/2, p.mass, p.mass, java.awt.Color.WHITE)
 		}
 	}
 

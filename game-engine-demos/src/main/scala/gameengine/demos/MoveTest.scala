@@ -3,7 +3,7 @@ package gameengine.demos
 import gameengine._
 import gameengine.styles.{ImperativeControlStyle, Game, EventInputStyle}
 
-object EventTest extends Game with EventInputStyle with ImperativeControlStyle {
+object MoveTest extends Game with EventInputStyle with ImperativeControlStyle {
 
 	val width = 640
 	val height = 480

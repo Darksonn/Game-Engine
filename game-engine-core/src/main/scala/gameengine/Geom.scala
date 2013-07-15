@@ -3,9 +3,6 @@ package gameengine
 case class Point(x: Int, y: Int) {
 	def toVector = Vector2D(this)
 }
-/**
- * Can function like a normal FloatingPoint but has some manipulation functions
- */ 
 final class Vector2D(val x: Double, val y: Double) {
 	def length = Math.sqrt(x * x + y * y)
 	def lengthSquared = length*length
@@ -18,6 +15,9 @@ final class Vector2D(val x: Double, val y: Double) {
 	def normalize = Vector2D(Math.cos(angle), Math.sin(angle))
 	def transform(center: Vector2D) = Vector2D(x - center.x, y - center.y)
 	def toPoint = Point(x.intValue, y.intValue)
+	def changeX(deltaX: Double) = Vector2D(x+deltaX, y)
+	def changeY(deltaY: Double) = Vector2D(x, y+deltaY)
+	override def toString = "Vector2D(" + x + ", " + y + ")"
 }
 object Vector2D {
 	def apply(pos: Point) = new Vector2D(pos.x, pos.y)
