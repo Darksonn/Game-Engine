@@ -1,5 +1,6 @@
 import sbt._
 import Keys._
+import java.io.File
 
 import com.github.theon.coveralls.CoverallsPlugin
 
@@ -14,8 +15,15 @@ object GameEngineBuild extends Build {
 		val Scalatest = "org.scalatest" %% "scalatest" % V.Scalatest % "test"
 		val Scalamock = "org.scalamock" %% "scalamock-scalatest-support" % V.Scalamock % "test"
 		val LWJGL = "org.lwjgl.lwjgl" % "lwjgl" % V.LWJGL
+		val LWJGLPlatform = "org.lwjgl.lwjgl" % "lwjgl-platform" % V.LWJGL
+		val LWJGLAll = Seq(
+			LWJGL,
+			LWJGLPlatform classifier "natives-windows"
+			/*LWJGLPlatform*/ classifier "natives-linux"
+			/*LWJGLPlatform*/ classifier "natives-osx"
+		)
 	}
-
+	val os = "windows"
 	override lazy val settings = super.settings ++ Seq(
 		scalaVersion := Deps.V.Scala,
 		scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
@@ -35,8 +43,14 @@ object GameEngineBuild extends Build {
 
 	lazy val core = Project("game-engine-core", file("game-engine-core"), settings = Project.defaultSettings)
 	lazy val functional = Project("game-engine-frp", file("game-engine-frp"), settings = Project.defaultSettings) dependsOn core
-	lazy val demos = Project("game-engine-demos", file("game-engine-demos"), settings = Project.defaultSettings) dependsOn(core, net, functional)
+	lazy val demos = Project("game-engine-demos", file("game-engine-demos"), settings = Project.defaultSettings) settings (libraryDependencies ++= Deps.LWJGLAll) dependsOn(core, net, functional, lwjgl)
 	lazy val net = Project("game-engine-net", file("game-engine-net"), settings = Project.defaultSettings) dependsOn core
 	lazy val states = Project("game-engine-states", file("game-engine-states"), settings = Project.defaultSettings) dependsOn core
-	lazy val lwjgl = Project("game-engine-lwjgl", file("game-engine-lwjgl"), settings = Project.defaultSettings) settings (libraryDependencies += Deps.LWJGL) dependsOn core
+	lazy val lwjgl = Project("game-engine-lwjgl", file("game-engine-lwjgl"), settings = Project.defaultSettings)
+	    settings (LWJGLPlugin.lwjglSettings: _*)
+	    settings (
+				//libraryDependencies ++= Deps.LWJGLAll,
+				LWJGLPlugin.lwjgl.version := Deps.V.LWJGL
+			)
+			dependsOn core
 }
