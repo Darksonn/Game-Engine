@@ -1,6 +1,7 @@
 package gameengine.functional
 
 import gameengine._
+import dk.tailcalled.pfp._
 
 trait FunctionalGame {
 
@@ -16,13 +17,15 @@ trait FunctionalGame {
 			val height = self.height
 			val title = self.title
 			var state = game
+			var img: Picture[Unit] = unit[Picture[Unit]]
 			def step(in: Input) = {
-				val updates = state.now._1
+				val now = state.now
+				img = now._2
 				state = state.later(in)
-				updates
+				now._1
 			}
 			def render(gfx: Output) {
-				state.now._2.paint(gfx)
+				img.paint(gfx)
 			}
 		}.main(args)
 	}

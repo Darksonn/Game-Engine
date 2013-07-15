@@ -58,7 +58,7 @@ package object impl {
 		val comp = new GameComponent(game)
 
 		val eventListener = new EverythingListener
-		comp.addKeyListener(eventListener)
+		window.addKeyListener(eventListener)
 		comp.addMouseListener(eventListener)
 		comp.addMouseMotionListener(eventListener)
 		window.addWindowListener(eventListener)
@@ -75,6 +75,9 @@ package object impl {
 		window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
 		var running = true
 		var lastTime = System.nanoTime()
+		var tick = 0
+		val img = new BufferedImage(game.width, game.height, BufferedImage.TYPE_INT_ARGB)
+		val gfx = img.createGraphics()
 		while (running) {
 			val events = Input(eventListener.getAndClear())
 			game.step(events).foreach {
@@ -82,13 +85,21 @@ package object impl {
 					running = false
 			}
 			if (running) {
-				val img = new BufferedImage(game.width, game.height, BufferedImage.TYPE_INT_ARGB)
-				val gfx = img.createGraphics()
 				game.render(new OutputImpl(gfx))
 				comp.getGraphics.drawImage(img, 0, 0, comp)
 			}
 			val nowTime = System.nanoTime()
+			// /* If double slashes are infront of this line, the program will attempt at limiting FPS to 60.
 			Thread.sleep(((nspf - (nowTime - lastTime)) / 1000000L) max 1L)
+			// */
+			 /* If double slashes are infront of this line, the program will write FPS.
+			val afterTime = System.nanoTime()
+			if ((tick % 10) == 0) {
+				val delta = afterTime - lastTime
+				println(1000000000.0 / delta)
+			}
+			tick += 1
+			// */
 			lastTime = System.nanoTime()
 		}
 		window.dispose()
