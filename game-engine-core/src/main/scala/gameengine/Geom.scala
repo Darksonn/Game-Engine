@@ -17,6 +17,18 @@ final class Vector2D(val x: Double, val y: Double) {
 	def toPoint = Point(x.intValue, y.intValue)
 	def changeX(deltaX: Double) = Vector2D(x+deltaX, y)
 	def changeY(deltaY: Double) = Vector2D(x, y+deltaY)
+	def isInsideCube(pos: Vector2D, width: Double, height: Double) = {
+		if (x > pos.x) {
+			if (x < pos.x+width) {
+				if (y > pos.y) {
+					if (y < pos.y+height) {
+						true
+					}
+				}
+			}
+		}
+		false
+	}
 	override def toString = "Vector2D(" + x + ", " + y + ")"
 }
 object Vector2D {

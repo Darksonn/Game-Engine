@@ -6,6 +6,8 @@ import java.util.zip.{ZipEntry, ZipInputStream}
 
 trait LWJGLGame extends BaseGame {
 
+	private val loadOrder32 = Seq("OpenAL32", "jinput-raw", "jinput-dx8", "lwjgl"/*, "jinput-wintab"*/)
+	private val loadOrder64 = Seq("OpenAL64", "jinput-raw_64", "jinput-dx8_64", "lwjgl64"/*, "jinput-wintab"*/)
 
 	override def main(args: Array[String]) = {
 		val urls = Thread.currentThread.getContextClassLoader.asInstanceOf[java.net.URLClassLoader].getURLs//.filter(Seq("jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll", "jinput-raw.dll", "lwjgl.dll", "lwjgl64.dll", "OpenAL32.dll", "OpenAL64.dll") contains _)
@@ -17,42 +19,25 @@ trait LWJGLGame extends BaseGame {
 		for (url <- urls) {
 			val jar = new File(url.toURI)
 			val jarName = jar.getName
-			var extractThisFile = false
-			if (true) {
-				val regex = ("lwjgl[-]platform[-][0-9]*(\\.[0-9]*)+[-]natives[-]" + getPlatform + "\\.jar").r
-				val check = regex findFirstIn jarName
-				check match {
-					case None => Unit
-					case Some(_) => extractThisFile = true
-				}
-			}
-			if (true) {
-				val regex = ("jinput[-]platform[-][0-9]*(\\.[0-9]*)+[-]natives[-]" + getPlatform + "\\.jar").r
-				val check = regex findFirstIn jarName
-				check match {
-					case None => Unit
-					case Some(_) => extractThisFile = true
-				}
-			}
-			if (jarName.startsWith("jinput-platform-")) {
-				val cut = jarName.substring(16)
-				if (cut == ("-natives-" + getPlatform + ".jar")) {
-					extractThisFile = true
-				}
-			}
-			if (extractThisFile) {
+			val regex = ("(jinput|lwjgl)[-]platform[-][0-9]*(\\.[0-9]*)+[-]natives[-]" + getPlatform + "\\.jar").r
+			val check = regex findFirstIn jarName
+			if (check.nonEmpty)
 				libs = libs ++ extract(jar, tempDir)
-			}
-		}
-		for (lib <- libs) {
-			try {
-				System.load(lib.getAbsolutePath)
-				println(lib)
-			} catch {
-				case ule: java.lang.UnsatisfiedLinkError => Unit//We loaded the one for 64 bit if this jvm is 32 or the other way around, we try loading both so ignore.
-			}
 		}
 		System.setProperty("java.library.path", System.getProperty("java.library.path") + ";" + tempDir.getAbsolutePath)
+		val sysPathsField = classOf[ClassLoader].getDeclaredField("sys_paths")
+		sysPathsField.setAccessible(true)
+		sysPathsField.set(null, null)
+		val bit = System.getProperty("sun.arch.data.model")
+		if (bit == "64") {
+			for (load <- loadOrder64) {
+				System.load(new File(tempDir, load + ".dll").getAbsolutePath)
+			}
+		} else {
+			for (load <- loadOrder32) {
+				System.load(new File(tempDir, load + ".dll").getAbsolutePath)
+			}
+		}
 		Runtime.getRuntime().addShutdownHook(new Thread {
 			override def run() {
 				for (lib <- libs) {
