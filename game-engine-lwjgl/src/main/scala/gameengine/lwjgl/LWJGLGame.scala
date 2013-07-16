@@ -13,6 +13,7 @@ trait LWJGLGame extends BaseGame {
 	private val loadOrderosx = Seq("openal.dylib", "libjinput-osx.jnilib", "liblwjgl.jnilib")
 
 	override def main(args: Array[String]) = {
+		javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName())
 		val urls = Thread.currentThread.getContextClassLoader.asInstanceOf[java.net.URLClassLoader].getURLs//.filter(Seq("jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll", "jinput-raw.dll", "lwjgl.dll", "lwjgl64.dll", "OpenAL32.dll", "OpenAL64.dll") contains _)
 		val temp = File.createTempFile("xxx", "xxx")
 		temp.delete
