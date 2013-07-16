@@ -3,7 +3,7 @@ package gameengine.demos
 import gameengine._
 import gameengine.styles.{ImperativeControlStyle, Game, EventInputStyle}
 
-object TextNImageTest extends Game with EventInputStyle with ImperativeControlStyle {
+object TextNImageTestLWJGL extends gameengine.lwjgl.LWJGLGame with Game with EventInputStyle with ImperativeControlStyle {
 
 	val width = 640
 	val height = 480
