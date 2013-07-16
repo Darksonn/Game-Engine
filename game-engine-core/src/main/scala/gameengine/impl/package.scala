@@ -172,7 +172,7 @@ package object impl {
 			}
 		}
 		def draw(drawable: Drawable) {
-			drawable.draw(gfx)
+			drawable.draw(this)
 		}
 	}
 
