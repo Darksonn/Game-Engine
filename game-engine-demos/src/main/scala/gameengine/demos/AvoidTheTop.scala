@@ -4,7 +4,7 @@ import gameengine._
 import gameengine.styles.{ImperativeControlStyle, Game, EventInputStyle}
 import java.io.File
 
-object AvoidTheTopGame extends Game with EventInputStyle with ImperativeControlStyle {
+trait AvoidTheTopGame extends Game with EventInputStyle with ImperativeControlStyle {
 
 	val datafile = new File(new File(System.getProperty("user.home", ".")), "avoidthetop.data")
 
@@ -179,3 +179,4 @@ object AvoidTheTopGame extends Game with EventInputStyle with ImperativeControlS
 	}
 
 }
+object AvoidTheTopGameSwing extends AvoidTheTopGame

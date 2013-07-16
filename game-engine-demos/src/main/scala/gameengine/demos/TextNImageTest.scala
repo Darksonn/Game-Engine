@@ -3,7 +3,7 @@ package gameengine.demos
 import gameengine._
 import gameengine.styles.{ImperativeControlStyle, Game, EventInputStyle}
 
-object TextNImageTest extends Game with EventInputStyle with ImperativeControlStyle {
+trait TextNImageTest extends Game with EventInputStyle with ImperativeControlStyle {
 
 	val width = 640
 	val height = 480
@@ -43,3 +43,4 @@ object TextNImageTest extends Game with EventInputStyle with ImperativeControlSt
 	}
 
 }
+object TextNImageTestSwing extends TextNImageTest

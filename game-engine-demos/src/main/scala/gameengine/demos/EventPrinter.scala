@@ -3,7 +3,7 @@ package gameengine.demos
 import gameengine._
 import gameengine.styles.{ImperativeControlStyle, Game, EventInputStyle}
 
-object EventPrinter extends Game with EventInputStyle with ImperativeControlStyle {
+trait EventPrinter extends Game with EventInputStyle with ImperativeControlStyle {
 
 	val width = 640
 	val height = 480
@@ -26,3 +26,4 @@ object EventPrinter extends Game with EventInputStyle with ImperativeControlStyl
 		case CloseRequestedEvent => quit()
 	}
 }
+object EventPrinterSwing extends EventPrinter
