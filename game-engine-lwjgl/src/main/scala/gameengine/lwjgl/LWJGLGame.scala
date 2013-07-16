@@ -6,8 +6,11 @@ import java.util.zip.{ZipEntry, ZipInputStream}
 
 trait LWJGLGame extends BaseGame {
 
-	private val loadOrder32 = Seq("OpenAL32", "jinput-raw", "jinput-dx8", "lwjgl"/*, "jinput-wintab"*/)
-	private val loadOrder64 = Seq("OpenAL64", "jinput-raw_64", "jinput-dx8_64", "lwjgl64"/*, "jinput-wintab"*/)
+	private val loadOrder32win = Seq("OpenAL32.dll", "jinput-raw.dll", "jinput-dx8.dll", "lwjgl.dll")
+	private val loadOrder64win = Seq("OpenAL64.dll", "jinput-raw_64.dll", "jinput-dx8_64.dll", "lwjgl64.dll")
+	private val loadOrder32linux = Seq("libopenal.so", "libjinput-linux.so", "liblwjgl.so")
+	private val loadOrder64linux = Seq("libopenal64.so", "libjinput-linux64.so", "liblwjgl64.so")
+	private val loadOrderosx = Seq("openal.dylib", "libjinput-osx.jnilib", "liblwjgl.jnilib")
 
 	override def main(args: Array[String]) = {
 		val urls = Thread.currentThread.getContextClassLoader.asInstanceOf[java.net.URLClassLoader].getURLs//.filter(Seq("jinput-dx8_64.dll", "jinput-dx8.dll", "jinput-raw_64.dll", "jinput-raw.dll", "lwjgl.dll", "lwjgl64.dll", "OpenAL32.dll", "OpenAL64.dll") contains _)
@@ -28,15 +31,8 @@ trait LWJGLGame extends BaseGame {
 		val sysPathsField = classOf[ClassLoader].getDeclaredField("sys_paths")
 		sysPathsField.setAccessible(true)
 		sysPathsField.set(null, null)
-		val bit = System.getProperty("sun.arch.data.model")
-		if (bit == "64") {
-			for (load <- loadOrder64) {
-				System.load(new File(tempDir, fixName(load)).getAbsolutePath)
-			}
-		} else {
-			for (load <- loadOrder32) {
-				System.load(new File(tempDir, fixName(load)).getAbsolutePath)
-			}
+		for (load <- getLoadOrder) {
+			System.load(new File(tempDir, load).getAbsolutePath)
 		}
 		Runtime.getRuntime().addShutdownHook(new Thread {
 			override def run() {
@@ -49,11 +45,19 @@ trait LWJGLGame extends BaseGame {
 		impl.run(this)
 	}
 
-	private def fixName(name: String) = getPlatform match {
-		case "linux" => "lib" + name + ".os"
-		case "windows" => name + ".dll"
-		case "osx" => "lib" + name + ".jnilib"
-		case _ => name + ".dll"
+	private def getLoadOrder = {
+		getPlatform match {
+			case "linux" => 
+				val bit = System.getProperty("sun.arch.data.model")
+				if (bit == "64") loadOrder64linux
+				else loadOrder32linux
+			case "windows" => 
+				val bit = System.getProperty("sun.arch.data.model")
+				if (bit == "64") loadOrder64win
+				else loadOrder32win
+			case "osx" => loadOrderosx
+			case _ => loadOrder32linux
+		}
 	}
 	private def randomName(): String = (new java.util.Random).nextLong.toHexString
 	private def extract(jarFile: File, extractLocation: File): Seq[File] = {
