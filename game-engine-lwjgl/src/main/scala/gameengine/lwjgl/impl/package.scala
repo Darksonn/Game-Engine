@@ -227,7 +227,19 @@ package object impl {
 			glPopMatrix()
 			res
 		}
+		private var aaenable = true
+		def withAntialiasing[A](enabled: Boolean)(body: => A): A = {
+			val prevaaenable = aaenable
+			aaenable = enabled
+			val res = body
+			aaenable = prevaaenable
+			res
+		}
 		def drawFilledCircle(c: Color) {
+			if (aaenable)
+				glEnable(GL_POLYGON_SMOOTH)
+			else
+				glDisable(GL_POLYGON_SMOOTH)
 			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
 			val precision = 100
 			var lastx = 1d
@@ -248,6 +260,10 @@ package object impl {
 			}
 		}
 		def drawFilledRect(c: Color) {
+			if (aaenable)
+				glEnable(GL_POLYGON_SMOOTH)
+			else
+				glDisable(GL_POLYGON_SMOOTH)
 			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
 			glBegin(GL_QUADS)
 			glTexCoord2f(0, 0)
@@ -261,6 +277,10 @@ package object impl {
 			glEnd()
 		}
 		def drawCircle(c: Color) {
+			if (aaenable)
+				glEnable(GL_POLYGON_SMOOTH)
+			else
+				glDisable(GL_POLYGON_SMOOTH)
 			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
 			val precision = 100
 			var lastx = 1d
@@ -280,6 +300,10 @@ package object impl {
 			}
 		}
 		def drawRect(c: Color) {
+			if (aaenable)
+				glEnable(GL_POLYGON_SMOOTH)
+			else
+				glDisable(GL_POLYGON_SMOOTH)
 			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
 			glLineWidth(1)
 			glBegin(GL_LINES)
@@ -330,6 +354,7 @@ package object impl {
 		def draw(drawable: gameengine.Drawable) {
 			drawable.draw(this)
 		}
+		def isAntialiasingEnabled = aaenable
 	}
 	
 }

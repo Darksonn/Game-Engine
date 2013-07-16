@@ -1,7 +1,7 @@
 package gameengine
 
 import javax.swing._
-import java.awt.{Color, Graphics, Graphics2D, Dimension}
+import java.awt.{Color, Graphics, Graphics2D, Dimension, RenderingHints}
 import java.awt.event.{InputEvent => _, _}
 import java.util.concurrent.atomic.AtomicReference
 import java.awt.image.BufferedImage
@@ -127,19 +127,43 @@ package object impl {
 			gfx.setTransform(transformation)
 			res
 		}
+		private var aaenable = false
+		def withAntialiasing[A](enabled: Boolean)(body: => A): A = {
+			val preaaenable = aaenable
+			aaenable = enabled
+			val res = body
+			aaenable = preaaenable
+			res
+		}
 		def drawFilledCircle(c: Color) {
+			if (aaenable) 
+				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON)
+			else
+				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF)
 			gfx.setColor(c)
 			gfx.fillOval(0, 0, 1, 1)
 		}
 		def drawFilledRect(c: Color) {
+			if (aaenable) 
+				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON)
+			else
+				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF)
 			gfx.setColor(c)
 			gfx.fillRect(0, 0, 1, 1)
 		}
 		def drawCircle(c: Color) {
+			if (aaenable) 
+				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON)
+			else
+				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF)
 			gfx.setColor(c)
 			gfx.drawOval(0, 0, 1, 1)
 		}
 		def drawRect(c: Color) {
+			if (aaenable) 
+				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON)
+			else
+				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF)
 			gfx.setColor(c)
 			gfx.drawRect(0, 0, 1, 1)
 		}
@@ -174,6 +198,7 @@ package object impl {
 		def draw(drawable: Drawable) {
 			drawable.draw(this)
 		}
+		def isAntialiasingEnabled = aaenable
 	}
 
 }

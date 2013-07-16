@@ -50,13 +50,17 @@ class DrawableText(s: String, font: java.awt.Font, color: java.awt.Color) extend
 			img = new BufferedImage(Math.ceil(bounds.getWidth).toInt, Math.ceil(bounds.getHeight).toInt, BufferedImage.TYPE_4BYTE_ABGR)
 			val gfx = img.createGraphics
 			gfx.setColor(color)
-			gfx.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON)
+			if (out.isAntialiasingEnabled) {
+				gfx.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON)
+			}
 			gfx.fill(shape)
 			gfx.dispose
 			drawable = Drawable.loadImage(img)
 		}
 		out.withScaling(img.getWidth.doubleValue / img.getHeight, 1) {
-			out.draw(drawable)
+			out.withAntialiasing(true) {
+				out.draw(drawable)
+			}
 		}
 	}
 }

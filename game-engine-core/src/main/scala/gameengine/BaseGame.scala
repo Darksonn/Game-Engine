@@ -50,6 +50,10 @@ trait Output {
 	def withRotation[A](radians: Double)(body: => A): A
 	def withScaling[A](scaleX: Double, scaleY: Double)(body: => A): A
 	def withTranslation[A](deltaX: Double, deltaY: Double)(body: => A): A
+	/**
+	 * Might be enabled by default by implementation.
+	 */
+	def withAntialiasing[A](enabled: Boolean)(body: => A): A
 	def drawFilledCircle(c: Color): Unit
 	def drawFilledRect(c: Color): Unit
 	def drawCircle(c: Color): Unit
@@ -59,4 +63,5 @@ trait Output {
 	def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
 	def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
 	def draw(drawable: Drawable): Unit
+	def isAntialiasingEnabled: Boolean
 }
