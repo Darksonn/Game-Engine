@@ -31,11 +31,11 @@ trait LWJGLGame extends BaseGame {
 		val bit = System.getProperty("sun.arch.data.model")
 		if (bit == "64") {
 			for (load <- loadOrder64) {
-				System.load(new File(tempDir, load + ".dll").getAbsolutePath)
+				System.load(new File(tempDir, fixName(load)).getAbsolutePath)
 			}
 		} else {
 			for (load <- loadOrder32) {
-				System.load(new File(tempDir, load + ".dll").getAbsolutePath)
+				System.load(new File(tempDir, fixName(load)).getAbsolutePath)
 			}
 		}
 		Runtime.getRuntime().addShutdownHook(new Thread {
@@ -49,6 +49,12 @@ trait LWJGLGame extends BaseGame {
 		impl.run(this)
 	}
 
+	private def fixName(name: String) = getPlatform match {
+		case "linux" => "lib" + name + ".os"
+		case "windows" => name + ".dll"
+		case "osx" => "lib" + name + ".jnilib"
+		case _ => name + ".dll"
+	}
 	private def randomName(): String = (new java.util.Random).nextLong.toHexString
 	private def extract(jarFile: File, extractLocation: File): Seq[File] = {
 		var files = Seq[File]()
