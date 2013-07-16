@@ -228,7 +228,7 @@ package object impl {
 			res
 		}
 		def drawFilledCircle(c: Color) {
-			glColor3d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d)
+			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
 			val precision = 100
 			var lastx = 1d
 			var lasty = 0d
@@ -248,7 +248,7 @@ package object impl {
 			}
 		}
 		def drawFilledRect(c: Color) {
-			glColor3d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d)
+			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
 			glBegin(GL_QUADS)
 			glTexCoord2f(0, 0)
 			glVertex2d(0, 0)
@@ -261,7 +261,7 @@ package object impl {
 			glEnd()
 		}
 		def drawCircle(c: Color) {
-			glColor3d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d)
+			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
 			val precision = 100
 			var lastx = 1d
 			var lasty = 0d
@@ -280,7 +280,7 @@ package object impl {
 			}
 		}
 		def drawRect(c: Color) {
-			glColor3d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d)
+			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
 			glLineWidth(1)
 			glBegin(GL_LINES)
 			glVertex2d(0, 0)
@@ -328,8 +328,7 @@ package object impl {
 			}
 		}
 		def draw(drawable: gameengine.Drawable) {
-			throw new RuntimeException("NYI");
-			//drawable.draw(gfx)
+			drawable.draw(this)
 		}
 	}
 	
