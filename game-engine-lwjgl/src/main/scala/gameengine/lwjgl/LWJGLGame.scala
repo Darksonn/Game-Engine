@@ -27,10 +27,10 @@ trait LWJGLGame extends BaseGame {
 			if (check.nonEmpty)
 				libs = libs ++ extract(jar, tempDir)
 		}
-		System.setProperty("java.library.path", System.getProperty("java.library.path") + ";" + tempDir.getAbsolutePath)
-		val sysPathsField = classOf[ClassLoader].getDeclaredField("sys_paths")
+		System.setProperty("org.lwjgl.librarypath", tempDir.getAbsolutePath)
+		/*val sysPathsField = classOf[ClassLoader].getDeclaredField("sys_paths")
 		sysPathsField.setAccessible(true)
-		sysPathsField.set(null, null)
+		sysPathsField.set(null, null)*/
 		for (load <- getLoadOrder) {
 			System.load(new File(tempDir, load).getAbsolutePath)
 		}
