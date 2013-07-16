@@ -162,9 +162,9 @@ package object impl {
 					case -1 => Unit//It was a mouse move, see above
 					case x =>
 						if (Mouse.getEventButtonState) {
-							result = result :+ KeyDownEvent(Key.MouseButton(x))
+							result = result :+ KeyDownEvent(Key.MouseButton(x+1))
 						} else {
-							result = result :+ KeyUpEvent(Key.MouseButton(x))
+							result = result :+ KeyUpEvent(Key.MouseButton(x+1))
 						}
 				}
 			}

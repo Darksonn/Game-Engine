@@ -37,20 +37,24 @@ object Drawable {
  * The size of the font has no effect on drawn string, use scaling to change the size afterwards
  */
 class DrawableText(s: String, font: java.awt.Font, color: java.awt.Color) extends Drawable {
+	private var drawable: Drawable = null
+	private var img: BufferedImage = null
 	protected[gameengine] def draw(out: Out) {
-		val f = font.deriveFont(30f)//(java.awt.geom.AffineTransform.getScaleInstance(15,15))
-		val g2 = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB).createGraphics
-		val vect = f.createGlyphVector(g2.getFontRenderContext, s)
-		val shape = vect.getOutline(0f, -vect.getVisualBounds.getY.floatValue)
-		g2.dispose
-		val bounds = shape.getBounds2D
-		val img = new BufferedImage(Math.ceil(bounds.getWidth).toInt, Math.ceil(bounds.getHeight).toInt, BufferedImage.TYPE_4BYTE_ABGR)
-		val gfx = img.createGraphics
-		gfx.setColor(color)
-		gfx.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON)
-		gfx.fill(shape)
-		gfx.dispose
-		val drawable = Drawable.loadImage(img)
+		if (drawable == null) {
+			val f = font.deriveFont(30f)//(java.awt.geom.AffineTransform.getScaleInstance(15,15))
+			val g2 = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB).createGraphics
+			val vect = f.createGlyphVector(g2.getFontRenderContext, s)
+			val shape = vect.getOutline(0f, -vect.getVisualBounds.getY.floatValue)
+			g2.dispose
+			val bounds = shape.getBounds2D
+			img = new BufferedImage(Math.ceil(bounds.getWidth).toInt, Math.ceil(bounds.getHeight).toInt, BufferedImage.TYPE_4BYTE_ABGR)
+			val gfx = img.createGraphics
+			gfx.setColor(color)
+			gfx.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON)
+			gfx.fill(shape)
+			gfx.dispose
+			drawable = Drawable.loadImage(img)
+		}
 		out.withScaling(img.getWidth.doubleValue / img.getHeight, 1) {
 			out.draw(drawable)
 		}
