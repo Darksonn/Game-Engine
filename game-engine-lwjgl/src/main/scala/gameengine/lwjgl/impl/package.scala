@@ -10,30 +10,8 @@ import org.lwjgl.input.{Mouse, Keyboard}
 
 package object impl {
 
-	var lastFrame: Long = -1
-	var lastFps: Long = -1
-	var fps: Long = -1
-	
-	def getTime = (Sys.getTime() * 1000) / Sys.getTimerResolution()
-	def getDelta = {
-		if (lastFrame == -1) -1
-		val cT = getTime
-		(getTime - lastFrame).intValue
-	}
-	def updateFps() = {
-		if (getTime - lastFps > 1000) {
-			if (getTime - lastFps > 2000) {
-				val seconds = (getTime - lastFps) / 1000
-				lastFps += seconds*1000
-				println((1d/seconds) + " fps")
-			} else {
-				lastFps += 1000
-				println(fps + " fps");
-			}
-			fps = 0
-		}
-		fps += 1
-	}
+	val fps = 60
+	val nspf = 1000000000L / fps
 
 	object EventListener {
 
@@ -191,20 +169,22 @@ package object impl {
 		glOrtho(0, game.width, game.height, 0, 1, -1)
 		glMatrixMode(GL_MODELVIEW)
 		var running = true
+		var lastTime = Sys.getTime * 1000000000L / Sys.getTimerResolution
+		var delta = nspf
 		while (running) {
 			glClear(GL_COLOR_BUFFER_BIT)
-			game.step(gameengine.Input(EventListener.getAndClear)).foreach {
+			game.step(gameengine.Input(EventListener.getAndClear :+ gameengine.TimePassEvent(delta))).foreach {
 				case ControlUpdate.Quit =>
 					running = false
 			}
 			game.render(new OutputImpl())
-			//updateFps()
-			lastFrame = getTime
 			Display.update()
-			Display.sync(60)
+			Display.sync(fps)
+			val thisTime = Sys.getTime * 1000000000L / Sys.getTimerResolution
+			delta = thisTime - lastTime
+			lastTime = Sys.getTime * 1000000000L / Sys.getTimerResolution
 		}
 		Display.destroy()
-		lastFrame = -1
 	}
 	
 	class OutputImpl extends gameengine.Output {

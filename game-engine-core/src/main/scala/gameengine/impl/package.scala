@@ -76,10 +76,11 @@ package object impl {
 		var running = true
 		var lastTime = System.nanoTime()
 		var tick = 0
+		var delta = nspf
 		val img = new BufferedImage(game.width, game.height, BufferedImage.TYPE_INT_ARGB)
 		val gfx = img.createGraphics()
 		while (running) {
-			val events = Input(eventListener.getAndClear())
+			val events = Input(eventListener.getAndClear() :+ TimePassEvent(delta))
 			game.step(events).foreach {
 				case ControlUpdate.Quit =>
 					running = false
@@ -91,15 +92,15 @@ package object impl {
 			val nowTime = System.nanoTime()
 			// /* If double slashes are infront of this line, the program will attempt at limiting FPS to 60.
 			Thread.sleep(((nspf - (nowTime - lastTime)) / 1000000L) max 1L)
+			val afterTime = System.nanoTime()
+			delta = afterTime - lastTime
 			// */
 			 /* If double slashes are infront of this line, the program will write FPS.
-			val afterTime = System.nanoTime()
 			if ((tick % 10) == 0) {
-				val delta = afterTime - lastTime
 				println(1000000000.0 / delta)
 			}
-			tick += 1
 			// */
+			tick += 1
 			lastTime = System.nanoTime()
 		}
 		window.dispose()

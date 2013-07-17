@@ -45,6 +45,7 @@ case class MouseMoveEvent(to: Point) extends MouseInputEvent
 
 sealed trait GenericEvent extends InputEvent
 case object CloseRequestedEvent extends GenericEvent
+case class TimePassEvent(ns: Long) extends GenericEvent
 
 trait Output {
 	def withRotation[A](radians: Double)(body: => A): A

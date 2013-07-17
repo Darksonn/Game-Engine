@@ -28,13 +28,16 @@ class PollingInputState {
 	private var _closeRequested = false
 	def closeRequested = _closeRequested
 
+	private var _timeDelta = 0L
+	def timeDelta = _timeDelta
+
 	private[gameengine] def update(input: Input) {
 		input.queue.foreach {
 			case KeyDownEvent(key) => keysDown += key
 			case KeyUpEvent(key) => keysDown -= key
 			case MouseMoveEvent(pos) => _mousePos = Some(pos)
 			case CloseRequestedEvent => _closeRequested = true
-
+			case TimePassEvent(ns) => _timeDelta = ns
 			case _: MouseClickEvent =>
 			case _: KeyTypeEvent =>
 		}
@@ -46,6 +49,7 @@ trait PollingInputStyle extends Style { this: Game =>
 	def keyDown(key: Key) = pollingInputState.keyDown(key)
 	def mousePos = pollingInputState.mousePos
 	def closeRequested = pollingInputState.closeRequested
+	def timeDelta = pollingInputState.timeDelta
 
 	override def preUpdate(input: Input) {
 		pollingInputState.update(input)
