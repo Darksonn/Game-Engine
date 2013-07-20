@@ -47,7 +47,7 @@ class DrawableText(s: String, font: java.awt.Font, color: java.awt.Color) extend
 			val shape = vect.getOutline(0f, -vect.getVisualBounds.getY.floatValue)
 			g2.dispose
 			val bounds = shape.getBounds2D
-			img = new BufferedImage(Math.ceil(bounds.getWidth).toInt, Math.ceil(bounds.getHeight).toInt, BufferedImage.TYPE_4BYTE_ABGR)
+			img = new BufferedImage(Math.ceil(bounds.getWidth).toInt+10, Math.ceil(bounds.getHeight).toInt, BufferedImage.TYPE_4BYTE_ABGR)
 			val gfx = img.createGraphics
 			gfx.setColor(color)
 			if (out.isAntialiasingEnabled) {
