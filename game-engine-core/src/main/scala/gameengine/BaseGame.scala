@@ -59,10 +59,34 @@ trait Output {
 	def drawFilledRect(c: Color): Unit
 	def drawCircle(c: Color): Unit
 	def drawRect(c: Color): Unit
-	def drawFilledOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
-	def drawFilledRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
-	def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
-	def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color): Unit
+	def drawFilledOval(x: Double, y: Double, w: Double, h: Double, c: Color) {
+		withTranslation(x, y) {
+			withScaling(w, h) {
+				drawFilledCircle(c)
+			}
+		}
+	}
+	def drawFilledRect(x: Double, y: Double, w: Double, h: Double, c: Color) {
+		withTranslation(x, y) {
+			withScaling(w, h) {
+				drawFilledRect(c)
+			}
+		}
+	}
+	def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color) {
+		withTranslation(x, y) {
+			withScaling(w, h) {
+				drawCircle(c)
+			}
+		}
+	}
+	def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color) {
+		withTranslation(x, y) {
+			withScaling(w, h) {
+				drawRect(c)
+			}
+		}
+	}
 	def draw(drawable: Drawable): Unit
 	def isAntialiasingEnabled: Boolean
 }

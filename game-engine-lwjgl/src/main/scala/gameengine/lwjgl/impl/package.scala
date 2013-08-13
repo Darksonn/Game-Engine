@@ -84,6 +84,9 @@ package object impl {
 			Keyboard.KEY_NUMPAD2 -> KeyEvent.VK_NUMPAD2,
 			Keyboard.KEY_NUMPAD3 -> KeyEvent.VK_NUMPAD3,
 			Keyboard.KEY_NUMPAD0 -> KeyEvent.VK_NUMPAD0,
+			Keyboard.KEY_NUMPADCOMMA -> KeyEvent.VK_COMMA,
+			Keyboard.KEY_NUMPADENTER -> KeyEvent.VK_ENTER,
+			Keyboard.KEY_NUMPADEQUALS -> KeyEvent.VK_EQUALS,
 			Keyboard.KEY_DECIMAL -> KeyEvent.VK_DECIMAL,
 			Keyboard.KEY_F11 -> KeyEvent.VK_F11,
 			Keyboard.KEY_F12 -> KeyEvent.VK_F12,
@@ -111,7 +114,14 @@ package object impl {
 			Keyboard.KEY_DOWN -> KeyEvent.VK_DOWN,
 			Keyboard.KEY_INSERT -> KeyEvent.VK_INSERT,
 			Keyboard.KEY_DELETE -> KeyEvent.VK_DELETE,
-			Keyboard.KEY_CLEAR -> KeyEvent.VK_CLEAR
+			Keyboard.KEY_CLEAR -> KeyEvent.VK_CLEAR,
+			Keyboard.KEY_LBRACKET -> KeyEvent.VK_OPEN_BRACKET,
+			Keyboard.KEY_RBRACKET -> KeyEvent.VK_CLOSE_BRACKET,
+			Keyboard.KEY_LSHIFT -> KeyEvent.VK_SHIFT,
+			Keyboard.KEY_RSHIFT -> KeyEvent.VK_SHIFT,
+			Keyboard.KEY_LCONTROL -> KeyEvent.VK_CONTROL,
+			Keyboard.KEY_RCONTROL -> KeyEvent.VK_CONTROL,
+			Keyboard.KEY_BACKSLASH -> KeyEvent.VK_BACK_SLASH
 		)
 
 		var lastMouse = Point(0,0)
@@ -304,34 +314,6 @@ package object impl {
 			glVertex2d(1, 0)
 			glVertex2d(0, 0)
 			glEnd()
-		}
-		def drawFilledOval(x: Double, y: Double, w: Double, h: Double, c: Color) {
-			withTranslation(x, y) {
-				withScaling(w, h) {
-					drawFilledCircle(c)
-				}
-			}
-		}
-		def drawFilledRect(x: Double, y: Double, w: Double, h: Double, c: Color) {
-			withTranslation(x, y) {
-				withScaling(w, h) {
-					drawFilledRect(c)
-				}
-			}
-		}
-		def drawOval(x: Double, y: Double, w: Double, h: Double, c: Color) {
-			withTranslation(x, y) {
-				withScaling(w, h) {
-					drawCircle(c)
-				}
-			}
-		}
-		def drawRect(x: Double, y: Double, w: Double, h: Double, c: Color) {
-			withTranslation(x, y) {
-				withScaling(w, h) {
-					drawRect(c)
-				}
-			}
 		}
 		def draw(drawable: gameengine.Drawable) {
 			drawable.draw(this)
