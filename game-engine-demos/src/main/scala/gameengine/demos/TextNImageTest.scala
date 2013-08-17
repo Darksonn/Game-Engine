@@ -9,8 +9,8 @@ trait TextNImageTest extends Game with EventInputStyle with ImperativeControlSty
 	val height = 480
 	val title = "Avoid the top!"
 
-	val t1 = new DrawableText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", new java.awt.Font("Monospaced", java.awt.Font.BOLD, 24), java.awt.Color.WHITE)
-	val t2 = new DrawableText("""0123456789!"#¤%&/()=?@£$€{[]}|¨^~'*-_.:,;+<>\§""", new java.awt.Font("Monospaced", java.awt.Font.BOLD, 24), java.awt.Color.WHITE)
+	val t1 = new DrawableText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", new java.awt.Font("Monospaced", java.awt.Font.BOLD, 24), Color.white)
+	val t2 = new DrawableText("""0123456789!"#¤%&/()=?@£$€{[]}|¨^~'*-_.:,;+<>\§""", new java.awt.Font("Monospaced", java.awt.Font.BOLD, 24), Color.white)
 	val p1 = Drawable.loadImage(new java.net.URL("""http://hd.wallpaperswide.com/thumbs/colors_splash-t2.jpg"""))
 
 	override def update(in: Input) = {
@@ -19,7 +19,7 @@ trait TextNImageTest extends Game with EventInputStyle with ImperativeControlSty
 	override def render(out: Output) {
 		import out._
 		withScaling(width, height) {
-			drawFilledRect(java.awt.Color.BLACK)
+			drawFilledRect(Color.black)
 		}
 		withTranslation(10,10) {
 			withScaling(15,15) {

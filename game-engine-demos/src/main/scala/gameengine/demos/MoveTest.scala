@@ -58,9 +58,9 @@ object MoveTest extends Game with EventInputStyle with ImperativeControlStyle {
 	override def render(out: Output) {
 		import out._
 		withScaling(width, height) {
-			drawFilledRect(java.awt.Color.BLACK)
+			drawFilledRect(Color.black)
 		}
-		drawFilledRect(x, y, 3, 3, java.awt.Color.WHITE)
+		drawFilledRect(x, y, 3, 3, Color.white)
 	}
 
 	override val on: PartialFunction[InputEvent, Unit] = {

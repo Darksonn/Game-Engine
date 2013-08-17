@@ -19,13 +19,13 @@ object Demo extends Game with EventInputStyle with ImperativeControlStyle {
 	override def render(out: Output) {
 		import out._
 		withScaling(width, height) {
-			drawFilledRect(java.awt.Color.BLACK)
+			drawFilledRect(Color.black)
 		}
 		withTranslation(width / 2, height / 2) {
 			withRotation(angle) {
 				withScaling(50, 50) {
 					withTranslation(-0.5, -0.5) {
-						drawFilledRect(java.awt.Color.RED)
+						drawFilledRect(Color.red)
 					}
 				}
 			}

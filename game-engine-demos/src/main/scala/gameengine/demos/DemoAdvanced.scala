@@ -16,7 +16,7 @@ object DemoAdvanced extends Game with EventInputStyle with ImperativeControlStyl
 	trait Entity {
 		val x: Int
 		val y: Int
-		val color: java.awt.Color
+		val color: Color
 		def step(in: Input, others: Seq[Entity]): Seq[Entity]
 		def render(out: Output) {
 			out.withScaling(10, 10) {
@@ -26,7 +26,7 @@ object DemoAdvanced extends Game with EventInputStyle with ImperativeControlStyl
 	}
 	object Entity {
 		case class Player(x: Int, y: Int) extends Entity {
-			val color = java.awt.Color.BLUE
+			val color = Color.blue
 			def step(in: Input, others: Seq[Entity]) = {
 				Seq()
 			}

@@ -37,10 +37,10 @@ object GravityTest extends Game with EventInputStyle with ImperativeControlStyle
 	override def render(out: Output) {
 		import out._
 		withScaling(width, height) {
-			drawFilledRect(java.awt.Color.BLACK)
+			drawFilledRect(Color.black)
 		}
 		for (p <- particles) {
-			drawFilledOval(p.pos.x-p.mass/2, p.pos.y-p.mass/2, p.mass, p.mass, java.awt.Color.WHITE)
+			drawFilledOval(p.pos.x-p.mass/2, p.pos.y-p.mass/2, p.mass, p.mass, Color.white)
 		}
 	}
 

@@ -6,7 +6,7 @@ import java.io.File
 
 trait AvoidTheTopGame extends Game with EventInputStyle with ImperativeControlStyle {
 
-	val datafile = new File(new File(System.getProperty("user.home", ".")), "avoidthetop.data")
+	val datafile = new File(new File(System.getProperty("java.io.tmpdir")), "avoidthetop.data")
 
 	val width = 640
 	val height = 480
@@ -114,31 +114,31 @@ trait AvoidTheTopGame extends Game with EventInputStyle with ImperativeControlSt
 	override def render(out: Output) {
 		import out._
 		withScaling(width, height) {
-			drawFilledRect(java.awt.Color.BLACK)
+			drawFilledRect(Color.black)
 		}
 		gamestate match {
 			case 0 =>
 				withTranslation(10,20) {
 					withScaling(20,20) {
-						draw(new DrawableText("Best score: " + (maxScore/1000.0) + " seconds", new java.awt.Font("Monospaced", 12, 1), java.awt.Color.WHITE))
+						draw(new DrawableText("Best score: " + (maxScore/1000.0) + " seconds", new java.awt.Font("Monospaced", 12, 1), Color.white))
 					}
 				}
 				withTranslation(10,80) {
 					withScaling(20,20) {
-						draw(new DrawableText("Click anywhere to play", new java.awt.Font("Monospaced", 12, 1), java.awt.Color.WHITE))
+						draw(new DrawableText("Click anywhere to play", new java.awt.Font("Monospaced", 12, 1), Color.white))
 					}
 				}
 				withTranslation(10,50) {
 					withScaling(20,20) {
-						draw(new DrawableText("Last score: " + (lastScore/1000.0) + " seconds", new java.awt.Font("Monospaced", 12, 1), java.awt.Color.WHITE))
+						draw(new DrawableText("Last score: " + (lastScore/1000.0) + " seconds", new java.awt.Font("Monospaced", 12, 1), Color.white))
 					}
 				}
 			case 1 =>
 				for (p <- platforms) {
-					drawFilledRect(0, p.y, p.hole, Platform.platformHeight, java.awt.Color.WHITE)
-					drawFilledRect(p.hole+Platform.holeWidth, p.y, width-p.hole+Platform.holeWidth, Platform.platformHeight, java.awt.Color.WHITE)
+					drawFilledRect(0, p.y, p.hole, Platform.platformHeight, Color.white)
+					drawFilledRect(p.hole+Platform.holeWidth, p.y, width-p.hole+Platform.holeWidth, Platform.platformHeight, Color.white)
 				}
-				drawFilledRect(player.x, player.y-4, 3, 3, java.awt.Color.RED)
+				drawFilledRect(player.x, player.y-4, 3, 3, Color.red)
 			case _ => Unit
 		}
 	}

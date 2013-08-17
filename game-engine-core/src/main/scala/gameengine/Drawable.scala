@@ -21,8 +21,8 @@ object Drawable {
 					val green = (pixel >> 8) & 0xFF
 					val blue = pixel & 0xFF
 					val alpha = (pixel >> 24) & 0xFF
-					if (alpha > 0) {//Dont bother drawing anything if it's transparent
-						val c = new java.awt.Color(red, green, blue, alpha)
+					if (alpha >= 0) {//Dont bother drawing anything if it's transparent
+						val c = new Color(red, green, blue, alpha)
 						out.drawFilledRect(x*pixelWidth, y*pixelHeight, pixelWidth, pixelHeight, c)
 					}
 				}
@@ -36,7 +36,7 @@ object Drawable {
  * A drawable that contains the specified string with the specified font and color
  * The size of the font has no effect on drawn string, use scaling to change the size afterwards
  */
-class DrawableText(s: String, font: java.awt.Font, color: java.awt.Color) extends Drawable {
+class DrawableText(s: String, font: java.awt.Font, color: Color) extends Drawable {
 	private var drawable: Drawable = null
 	private var img: BufferedImage = null
 	protected[gameengine] def draw(out: Out) {
@@ -49,7 +49,7 @@ class DrawableText(s: String, font: java.awt.Font, color: java.awt.Color) extend
 			val bounds = shape.getBounds2D
 			img = new BufferedImage(Math.ceil(bounds.getWidth).toInt+10, Math.ceil(bounds.getHeight).toInt, BufferedImage.TYPE_4BYTE_ABGR)
 			val gfx = img.createGraphics
-			gfx.setColor(color)
+			gfx.setColor(new java.awt.Color(color.red, color.green, color.blue, color.alpha))
 			if (out.isAntialiasingEnabled) {
 				gfx.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON)
 			}

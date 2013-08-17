@@ -1,7 +1,7 @@
 package gameengine
 
 import javax.swing._
-import java.awt.{Color, Graphics, Graphics2D, Dimension, RenderingHints}
+import java.awt.{Color => AWTColor, Graphics, Graphics2D, Dimension, RenderingHints}
 import java.awt.event.{InputEvent => _, _}
 import java.util.concurrent.atomic.AtomicReference
 import java.awt.image.BufferedImage
@@ -86,7 +86,13 @@ package object impl {
 					running = false
 			}
 			if (running) {
-				game.render(new OutputImpl(gfx))
+				try {
+					game.render(new OutputImpl(gfx))
+				} catch {
+					case e: Exception =>
+						e.printStackTrace
+						running = false
+				}
 				comp.getGraphics.drawImage(img, 0, 0, comp)
 			}
 			val nowTime = System.nanoTime()
@@ -141,7 +147,7 @@ package object impl {
 				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON)
 			else
 				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF)
-			gfx.setColor(c)
+			gfx.setColor(new AWTColor(c.red, c.green, c.blue, c.alpha))
 			gfx.fillOval(0, 0, 1, 1)
 		}
 		def drawFilledRect(c: Color) {
@@ -149,7 +155,7 @@ package object impl {
 				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON)
 			else
 				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF)
-			gfx.setColor(c)
+			gfx.setColor(new AWTColor(c.red, c.green, c.blue, c.alpha))
 			gfx.fillRect(0, 0, 1, 1)
 		}
 		def drawCircle(c: Color) {
@@ -157,7 +163,7 @@ package object impl {
 				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON)
 			else
 				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF)
-			gfx.setColor(c)
+			gfx.setColor(new AWTColor(c.red, c.green, c.blue, c.alpha))
 			gfx.drawOval(0, 0, 1, 1)
 		}
 		def drawRect(c: Color) {
@@ -165,7 +171,7 @@ package object impl {
 				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON)
 			else
 				gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF)
-			gfx.setColor(c)
+			gfx.setColor(new AWTColor(c.red, c.green, c.blue, c.alpha))
 			gfx.drawRect(0, 0, 1, 1)
 		}
 		def draw(drawable: Drawable) {

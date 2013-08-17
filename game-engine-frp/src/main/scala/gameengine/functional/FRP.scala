@@ -29,7 +29,7 @@ package object functional {
 			def paint(gfx: Output) = gfx.withTranslation(tx, ty) { self.paint(gfx) }
 		}
 	}
-	def square(col: java.awt.Color): Picture[Unit] = new Picture[Unit] {
+	def square(col: gameengine.Color): Picture[Unit] = new Picture[Unit] {
 		def paint(gfx: Output) = { gfx.drawFilledRect(col); () }
 	}
 

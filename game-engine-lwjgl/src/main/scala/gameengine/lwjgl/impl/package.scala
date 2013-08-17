@@ -2,10 +2,9 @@ package gameengine.lwjgl
 
 import org.lwjgl.opengl.GL11._
 import org.lwjgl._
-import java.awt.Color
 import java.awt.event.KeyEvent
 import org.lwjgl.opengl._
-import gameengine.{Point, InputEvent, ControlUpdate, CloseRequestedEvent, KeyDownEvent, KeyUpEvent, MouseMoveEvent, Key}
+import gameengine.{Color, Point, InputEvent, ControlUpdate, CloseRequestedEvent, KeyDownEvent, KeyUpEvent, MouseMoveEvent, Key}
 import org.lwjgl.input.{Mouse, Keyboard}
 
 package object impl {
@@ -232,7 +231,7 @@ package object impl {
 				glEnable(GL_POLYGON_SMOOTH)
 			else
 				glDisable(GL_POLYGON_SMOOTH)
-			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
+			glColor4d(c.red/255d, c.green/255d, c.blue/255d, c.alpha/255d)
 			val precision = 100
 			var lastx = 1d
 			var lasty = 0d
@@ -256,7 +255,7 @@ package object impl {
 				glEnable(GL_POLYGON_SMOOTH)
 			else
 				glDisable(GL_POLYGON_SMOOTH)
-			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
+			glColor4d(c.red/255d, c.green/255d, c.blue/255d, c.alpha/255d)
 			glBegin(GL_QUADS)
 			glTexCoord2f(0, 0)
 			glVertex2d(0, 0)
@@ -273,7 +272,7 @@ package object impl {
 				glEnable(GL_POLYGON_SMOOTH)
 			else
 				glDisable(GL_POLYGON_SMOOTH)
-			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
+			glColor4d(c.red/255d, c.green/255d, c.blue/255d, c.alpha/255d)
 			val precision = 100
 			var lastx = 1d
 			var lasty = 0d
@@ -296,7 +295,7 @@ package object impl {
 				glEnable(GL_POLYGON_SMOOTH)
 			else
 				glDisable(GL_POLYGON_SMOOTH)
-			glColor4d(c.getRed/255d, c.getGreen/255d, c.getBlue/255d, c.getAlpha/255d)
+			glColor4d(c.red/255d, c.green/255d, c.blue/255d, c.alpha/255d)
 			glLineWidth(1)
 			glBegin(GL_LINES)
 			glVertex2d(0, 0)
