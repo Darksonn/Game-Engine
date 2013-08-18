@@ -23,6 +23,7 @@ object ShooterTest extends Game with EventInputStyle with ImperativeControlStyle
 	var rp = false
 	var fwp = false
 	var bwp = false
+	var paused = false
 	var shotCooldown = 0l
 	var gamestate = -1
 	var mobSpawnCountdown = 0
@@ -118,79 +119,116 @@ object ShooterTest extends Game with EventInputStyle with ImperativeControlStyle
 					}
 				}
 			case 1 =>
-				mobSpawnCountdown -= 1
-				if (mobSpawnCountdown <= 0) {
-					val r = new java.util.Random
-					addEntity(new Mob(Vector2D(r.nextDouble * width, r.nextDouble * height), 4 + r.nextInt(2)))
-					mobSpawnCountdownMax = Math.max(750, mobSpawnCountdownMax-80)
-					mobSpawnCountdown = mobSpawnCountdownMax
-				}
-				if (Player.hp <= 0)
-					gamestate = -2
-				for (e <- entities) {
-					e.update
-				}
-				if (lp)
-					Player.turnCounterClockwise(turnspd)
-				if (rp)
-					Player.turnClockwise(turnspd)
-				if (fwp)
-					Player.move(movespd)
-				if (bwp)
-					Player.move(movespd * (-7d) / 10d)
-				for (event <- in.queue) {
-					event match {
-						case TimePassEvent(ns) =>
-							shotCooldown = if (shotCooldown < ns) {0} else {shotCooldown - ns}
-						case KeyDownEvent(key) =>
-							key match {
-								case Key.KeyboardKey(27) =>//esc
-									gamestate = -2
-								case Key.KeyboardKey(32) =>//space
-									if (shotCooldown <= 0) {
-										Player.shoot
-										shotCooldown = 200000000l
+				if (paused) {
+					for (event <- in.queue) {
+						event match {
+							case KeyDownEvent(key) =>
+								key match {
+									case Key.KeyboardKey(37) =>//right
+										rp = true
+									case Key.KeyboardKey(38) =>//up
+										fwp = true
+									case Key.KeyboardKey(39) =>//left
+										lp = true
+									case Key.KeyboardKey(40) =>//down
+										bwp = true
+									case Key.KeyboardKey(80) =>//p
+										paused = !paused
+									case _ => Unit
 									}
-								case Key.KeyboardKey(37) =>//right
-									rp = true
-								case Key.KeyboardKey(38) =>//up
-									fwp = true
-								case Key.KeyboardKey(39) =>//left
-									lp = true
-								case Key.KeyboardKey(40) =>//down
-									bwp = true
-								case Key.KeyboardKey(83) =>//s
-									mobSpawnCountdown = 0
-								case _ => Unit
-							}
-						case KeyUpEvent(key) =>	
-							key match {
-								case Key.KeyboardKey(37) =>
-									rp = false
-								case Key.KeyboardKey(38) =>
-									fwp = false
-								case Key.KeyboardKey(39) =>
-									lp = false
-								case Key.KeyboardKey(40) =>
-									bwp = false
-								case _ => Unit
-							}
-						case _ => Unit
+							case KeyUpEvent(key) =>	
+								key match {
+									case Key.KeyboardKey(37) =>//right
+										rp = false
+									case Key.KeyboardKey(38) =>//up
+										fwp = false
+									case Key.KeyboardKey(39) =>//left
+										lp = false
+									case Key.KeyboardKey(40) =>//down
+										bwp = false
+									case _ => Unit
+								}
+							case _ => Unit
+						}
 					}
-				}
-				if (entitiesToRemove.size > 0) {
-					entities = entities diff entitiesToRemove
-					entitiesToRemove = Seq[Entity]()
-				}
-				if (entitiesToAdd.size > 0) {
-					entities = entities ++ entitiesToAdd
-					entitiesToAdd = Seq[Entity]()
+				} else {
+					mobSpawnCountdown -= 1
+					if (mobSpawnCountdown <= 0) {
+						val r = new java.util.Random
+						addEntity(new Mob(Vector2D(r.nextDouble * width, r.nextDouble * height), 4 + r.nextInt(2)))
+						mobSpawnCountdownMax = Math.max(750, mobSpawnCountdownMax-80)
+						mobSpawnCountdown = mobSpawnCountdownMax
+					}
+					if (Player.hp <= 0)
+						gamestate = -2
+					for (e <- entities) {
+						e.update
+					}
+					if (lp)
+						Player.turnCounterClockwise(turnspd)
+					if (rp)
+						Player.turnClockwise(turnspd)
+					if (fwp)
+						Player.move(movespd)
+					if (bwp)
+						Player.move(movespd * (-7d) / 10d)
+					for (event <- in.queue) {
+						event match {
+							case TimePassEvent(ns) =>
+								shotCooldown = if (shotCooldown < ns) {0} else {shotCooldown - ns}
+							case KeyDownEvent(key) =>
+								key match {
+									case Key.KeyboardKey(27) =>//esc
+										gamestate = -2
+									case Key.KeyboardKey(32) =>//space
+										if (shotCooldown <= 0) {
+											Player.shoot
+											shotCooldown = 200000000l
+										}
+									case Key.KeyboardKey(37) =>//right
+										rp = true
+									case Key.KeyboardKey(38) =>//up
+										fwp = true
+									case Key.KeyboardKey(39) =>//left
+										lp = true
+									case Key.KeyboardKey(40) =>//down
+										bwp = true
+									case Key.KeyboardKey(80) =>//p
+										paused = !paused
+									case Key.KeyboardKey(83) =>//s
+										mobSpawnCountdown = 0
+									case _ => Unit
+								}
+							case KeyUpEvent(key) =>	
+								key match {
+									case Key.KeyboardKey(37) =>//right
+										rp = false
+									case Key.KeyboardKey(38) =>//up
+										fwp = false
+									case Key.KeyboardKey(39) =>//left
+										lp = false
+									case Key.KeyboardKey(40) =>//down
+										bwp = false
+									case _ => Unit
+								}
+							case _ => Unit
+						}
+					}
+					if (entitiesToRemove.size > 0) {
+						entities = entities diff entitiesToRemove
+						entitiesToRemove = Seq[Entity]()
+					}
+					if (entitiesToAdd.size > 0) {
+						entities = entities ++ entitiesToAdd
+						entitiesToAdd = Seq[Entity]()
+					}
 				}
 			case _ => -1
 		}
 		Seq()
 	}
 	val menuText = new DrawableText("Press any key to start the game", new java.awt.Font("Monospaced", 12, 1), Color.white)
+	val pausedText = new DrawableText("Paused", new java.awt.Font("Monospaced", 12, 1), Color.white)
 	override def render(out: Output) {
 		out.withScaling(width, height) {
 			out.drawFilledRect(Color.black)
@@ -225,6 +263,15 @@ object ShooterTest extends Game with EventInputStyle with ImperativeControlStyle
 					e.render(out)
 				}
 				Player.render(out)
+				if (paused) {
+					out.withTranslation(width/2d, height/2d) {
+						out.withScaling(20,20) {
+							out.withTranslation(-3, -0.5) {
+								out.draw(pausedText)
+							}
+						}
+					}
+				}
 			case _ => Unit
 		}
 	}
